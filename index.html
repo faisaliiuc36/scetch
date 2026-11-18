@@ -138,8 +138,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 .sw input:checked+i::after{transform:translateX(18px)}
 
 /* right-hand tabs */
-.ptabs{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:5px;margin-bottom:14px;border:1px solid var(--line);border-radius:16px;background:var(--panel);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);position:sticky;top:10px;z-index:5}
-.ptab{position:relative;flex-direction:column;gap:3px;padding:9px 2px 7px;font-size:11px;font-weight:600;border:0;background:transparent;color:var(--mute);border-radius:11px}
+.ptabs{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:5px;margin-bottom:14px;border:1px solid var(--line);border-radius:16px;background:var(--panel);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);position:sticky;top:10px;z-index:5}
+.ptab{position:relative;flex-direction:column;gap:3px;padding:9px 1px 7px;font-size:10.5px;font-weight:600;border:0;background:transparent;color:var(--mute);border-radius:11px}
 .ptab.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--ink);box-shadow:0 8px 18px -10px rgba(255,159,28,.9)}
 .ptab.has::after{content:"";position:absolute;top:6px;right:9px;width:7px;height:7px;border-radius:50%;background:#5eead4;box-shadow:0 0 6px #5eead4}
 .pane{display:none;margin-bottom:0}.pane.on{display:block}
@@ -182,6 +182,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <button type="button" class="ptab" id="pt-text"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2M9 19h6M12 5v14"/></svg><span>Text</span></button>
       <button type="button" class="ptab" id="pt-demo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 2 4 5"/></svg><span>Demo</span></button>
       <button type="button" class="ptab" id="pt-photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg><span>Photo</span></button>
+      <button type="button" class="ptab" id="pt-ans"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m8 12 3 3 5-6"/></svg><span>Answer</span></button>
       <button type="button" class="ptab" id="pt-look"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Look</span></button>
       <button type="button" class="ptab" id="pt-sound"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>Sound</span></button>
     </nav>
@@ -195,6 +196,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <div class="ch"><h2>Text &amp; style</h2></div>
       <label for="t-title">Title</label><input type="text" id="t-title" value="GUESS THE PLAYER">
       <label for="t-sub">Line under the title</label><input type="text" id="t-sub" value="Comment your answer">
+      <div class="lbl">Funny title ideas (tap one)</div>
+      <div id="ftc" class="chips"></div>
       <label for="t-name">Answer name (shown big at the end)</label><input type="text" id="t-name" placeholder="Leave empty to use the player card name">
       <div class="lbl">Colour theme</div>
       <div id="thc" class="chips"></div>
@@ -212,7 +215,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
     </div>
 
     <div class="card pane" id="pane-photo">
-      <div class="ch"><h2>Your own photo</h2></div>
+      <div class="ch"><h2>1 · Guess image</h2></div>
+      <p class="hint">This is the picture that gets <b>sketched</b>. People guess from this one.</p>
       <label class="drop" id="drop" for="file">
         <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span>
         <span><b>Choose an image</b><small>Click, drag an image onto the page, or press Ctrl+V</small></span>
@@ -224,13 +228,34 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <p class="hint">Works with links that allow it, such as images from Wikimedia Commons (right click the image, copy image address).</p>
     </div>
 
+    <div class="card pane" id="pane-ans">
+      <div class="ch"><h2>2 · Answer image (output)</h2></div>
+      <p class="hint">Optional. The sketch is drawn from image 1, but the <b>final colour reveal shows this image</b>. Leave it empty to reveal image 1 as before.</p>
+      <label class="drop" id="drop2" for="file2">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span>
+        <span><b>Choose the answer image</b><small>Click or drag an image here</small></span>
+        <input type="file" id="file2" class="vh" accept="image/*">
+      </label>
+      <div class="phv" id="phv2" hidden><canvas id="phc2" width="120" height="120"></canvas><div><b id="phn2"></b><small>This will appear at the end as the answer.</small></div><button id="phx2" type="button">Remove</button></div>
+      <label for="url2">Or paste an image link</label>
+      <div class="row2"><input type="text" id="url2" placeholder="https://.../answer.jpg"><button id="urlgo2" type="button">Load</button></div>
+
+      <div class="ch" style="margin-top:22px"><h2>😂 Funny mode</h2></div>
+      <p class="hint">Makes the ending a big "you guessed wrong" moment.</p>
+      <label class="sw"><span><b>Funny reveal</b><small>Pause, record scratch, boing, sad trombone, stamp slam, laugh</small></span><input type="checkbox" id="o-fun" checked><i></i></label>
+      <label class="sw"><span><b>Emoji rain</b><small>😂 🤣 💀 😭 🤡 fall during the reveal</small></span><input type="checkbox" id="o-rain" checked><i></i></label>
+      <label for="t-stamp">Stamp text (slams on the answer)</label>
+      <input type="text" id="t-stamp" value="WRONG! 😂">
+      <div class="chips" id="stc" style="margin-top:8px"></div>
+    </div>
+
     <div class="card pane" id="pane-look">
       <div class="ch"><h2>Look</h2></div>
       <div class="rg"><div class="lb"><label for="detail">Line detail</label><output id="o-detail"></output></div><input type="range" id="detail" min="1" max="10" step="1" value="5"></div>
       <div class="rg"><div class="lb"><label for="shade">Shading</label><output id="o-shade"></output></div><input type="range" id="shade" min="0" max="10" step="1" value="6"></div>
       <div class="rg"><div class="lb"><label for="speed">Drawing speed</label><output id="o-speed"></output></div><input type="range" id="speed" min="1" max="10" step="1" value="3"></div>
       <label class="sw"><span><b>Colour pencils</b><small>Shading takes the photo colours</small></span><input type="checkbox" id="o-col" checked><i></i></label>
-      <label class="sw"><span><b>Colour reveal</b><small>Full colour photo opens at the end</small></span><input type="checkbox" id="o-rev" checked><i></i></label>
+      <label class="sw"><span><b>Colour reveal</b><small>Full colour answer opens at the end (image 2 if set)</small></span><input type="checkbox" id="o-rev" checked><i></i></label>
       <label class="sw"><span><b>Show the pencil</b><small>A pencil follows the drawing</small></span><input type="checkbox" id="o-pen" checked><i></i></label>
     </div>
 
@@ -254,7 +279,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 <script>
 const $=id=>document.getElementById(id),cv=$('cv'),cx=cv.getContext('2d');
 const art=document.createElement('canvas'),ax=art.getContext('2d');
-let lastDemo=0,curTab='player',srcC=null,W=720,H=720,OW=1920,OH=1080,PX=0,PY=0,PW=720,PH=720,sc=1,STR=[],anim=null,busy=false,curName='',bgc=null,bgk='';
+let ansC=null,ansName='',lastDemo=0,curTab='player',srcC=null,W=720,H=720,OW=1920,OH=1080,PX=0,PY=0,PW=720,PH=720,sc=1,STR=[],anim=null,busy=false,curName='',bgc=null,bgk='';
 const clamp01=x=>Math.min(1,Math.max(0,x)),ease=x=>1-Math.pow(1-clamp01(x),3),back=x=>{x=clamp01(x);const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
 const status=m=>{$('stt').textContent=m};
 const fmtT=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
@@ -308,7 +333,22 @@ function useImage(img){
   const c=srcC.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,W,H);c.drawImage(img,0,0,W,H);
   layout();status('Ready. Press Play it.');
 }
-function lock(on){busy=on;document.body.classList.toggle('busy',on);$('st').classList.toggle('busy',on);['draw','rec','png','file','urlgo','bgprev','penprev'].forEach(id=>$(id).disabled=on);}
+function drawCover(c,img,x,y,w,h){const iw=img.width,ih=img.height,k=Math.max(w/iw,h/ih),dw=iw*k,dh=ih*k;c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
+function useAnswer(im,name){
+  const k=Math.min(1,1080/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*k)),h=Math.max(1,Math.round(im.height*k));
+  ansC=document.createElement('canvas');ansC.width=w;ansC.height=h;const c=ansC.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,w,h);c.drawImage(im,0,0,w,h);
+  ansName=name||'Answer';
+  const pc=$('phc2'),x=pc.getContext('2d'),q=Math.min(120/im.width,120/im.height);x.fillStyle='#fff';x.fillRect(0,0,120,120);x.drawImage(im,(120-im.width*q)/2,(120-im.height*q)/2,im.width*q,im.height*q);
+  $('phn2').textContent=ansName;$('phv2').hidden=false;$('pt-ans').classList.add('has');
+  status('Answer image set. The sketch will end by revealing it. Press Play it.');showPane('ans');idle();
+}
+function clearAnswer(){ansC=null;ansName='';$('phv2').hidden=true;$('pt-ans').classList.remove('has');$('file2').value='';status('Answer image removed. Image 1 will be revealed.');idle()}
+function loadAnswerFile(f){if(!f||!f.type.startsWith('image/'))return;const r=new FileReader();
+  r.onload=()=>{const im=new Image();im.onload=()=>useAnswer(im,f.name);im.onerror=()=>status('Could not read that image.');im.src=r.result};r.readAsDataURL(f);}
+function loadAnswerURL(u){u=u.trim();if(!u)return;status('Loading the answer image…');const im=new Image();im.crossOrigin='anonymous';
+  im.onload=()=>useAnswer(im,u.split('?')[0].split('/').pop()||'Image link');
+  im.onerror=()=>status('That link could not be loaded. Try another image address, or upload the file.');im.src=u;}
+function lock(on){busy=on;document.body.classList.toggle('busy',on);$('st').classList.toggle('busy',on);['draw','rec','png','file','urlgo','file2','urlgo2','phx2','bgprev','penprev'].forEach(id=>$(id).disabled=on);}
 
 /* ---------- sound engine (smooth: limiter + soft reverb + gentle envelopes + fade-out; everything also goes to the recording) ---------- */
 let ac=null,recDest,spk,rg,master,comp,rev,bus=null,srcs=[],noiseBuf=null,scr=null;
@@ -418,6 +458,17 @@ function bgStart(T){
   }
 }
 function sfxIntro(){nz(0,.6,200,4200,.26,.7,[-.7,.7]);boom(.5,.6);sweep(520,980,1.0,.25,.1,'sine');nz(1.1,.6,400,2400,.14,.8,[.6,-.6]);}
+function sfxFunny(a){
+  const D=a.dl;
+  nz(0,.42,3200,350,.34,1.6);sweep(900,120,0,.4,.07,'sawtooth');            /* record scratch */
+  sweep(180,760,D,.22,.2,'sine');sweep(760,300,D+.2,.26,.14,'sine');          /* boing */
+  nz(D+.1,2.2,600,1500,.12,.6,[-.3,.3]);
+  [[311,.0,.42],[294,.45,.42],[277,.9,.42]].forEach(([f,t,d])=>{tone(f,D+.3+t,d,.2,'sawtooth')});   /* sad trombone: wah wah wah */
+  sweep(262,196,D+1.65,1.0,.1,'sawtooth');tone(262,D+1.65,.9,.16,'sawtooth');
+  const S0=D+1.75;boom(S0,1);nz(S0,.3,2400,300,.3,.8,null,true);              /* stamp slam */
+  for(let i=0;i<7;i++){const t=S0+.3+i*.19,f=250-i*9;nz(t,.12,950,650,.2,2.6,null,true);tone(f,t,.14,.13,'sawtooth');tone(f*1.5,t+.02,.1,.05,'sawtooth');} /* ha ha ha ha */
+  if(a.ans){tone(196,S0+1.7,.4,.12,'sawtooth');}
+}
 function sfxReveal(a){
   boom(.3,.8);[523,659,784,1047,1319,1568].forEach((f,i)=>tone(f,.32+i*.07,.6,.14,'triangle'));
   nz(.4,2.6,600,1500,.20,.6,[-.3,.3]);nz(.5,2.4,1600,900,.07,.5,[.4,-.4]);
@@ -536,6 +587,13 @@ function loadURL(u){u=u.trim();if(!u)return;status('Loading the image…');const
   im.onload=()=>{[...$('pg').children].forEach(b=>b.classList.remove('on'));curName='';useImage(im);setPhoto(im,u.split('?')[0].split('/').pop()||'Image link')};
   im.onerror=()=>status('That link could not be loaded. Try a Wikimedia Commons image address, or put the photo in the players folder (see below).');im.src=u;}
 $('urlgo').onclick=()=>loadURL($('url').value);
+$('file2').onchange=e=>loadAnswerFile(e.target.files[0]);
+$('urlgo2').onclick=()=>loadAnswerURL($('url2').value);
+$('url2').onkeydown=e=>{if(e.key==='Enter')loadAnswerURL($('url2').value)};
+$('phx2').onclick=()=>{if(!busy)clearAnswer()};
+['dragover','dragenter'].forEach(ev=>$('drop2').addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();$('drop2').classList.add('hot')}));
+$('drop2').addEventListener('dragleave',()=>$('drop2').classList.remove('hot'));
+$('drop2').addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();$('drop2').classList.remove('hot');if(!busy)loadAnswerFile(e.dataTransfer.files[0])});
 $('url').onkeydown=e=>{if(e.key==='Enter')loadURL($('url').value)};
 
 /* your own photos: put images in a "players" folder next to this page and list them in players/players.json */
@@ -682,9 +740,9 @@ function drawPanel(a,T,S,th){
   cx.save();cx.shadowColor=th.c1;cx.shadowBlur=(30+8*Math.sin(T*3))*S;cx.beginPath();cx.roundRect(PX-12*S,PY-12*S,PW+24*S,PH+24*S,30*S);
   const g=cx.createLinearGradient(PX,PY,PX+PW,PY+PH);g.addColorStop(0,th.acc);g.addColorStop(1,th.c1);cx.fillStyle=g;cx.fill();cx.restore();
   cx.save();cx.beginPath();cx.roundRect(PX,PY,PW,PH,20*S);cx.clip();cx.drawImage(art,PX,PY);if(!a&&srcC)cx.drawImage(srcC,PX,PY,PW,PH);
-  if(a&&a.rev&&a.done&&a.rt>=.3){
-    const maxR=Math.hypot(PW,PH)/2*1.05,r=ease((a.rt-.3)/1.4)*maxR;
-    cx.save();cx.beginPath();cx.arc(cxp,cyp,r,0,7);cx.clip();cx.drawImage(srcC,PX,PY,PW,PH);cx.restore();
+  if(a&&a.rev&&a.done&&a.rt>=.3+a.dl){
+    const maxR=Math.hypot(PW,PH)/2*1.05,r=ease((a.rt-.3-a.dl)/1.4)*maxR;
+    cx.save();cx.beginPath();cx.arc(cxp,cyp,r,0,7);cx.clip();if(ansC)drawCover(cx,ansC,PX,PY,PW,PH);else cx.drawImage(srcC,PX,PY,PW,PH);cx.restore();
     if(r<maxR){cx.beginPath();cx.arc(cxp,cyp,r,0,7);cx.lineWidth=10*S;cx.strokeStyle=th.acc;cx.shadowColor=th.acc;cx.shadowBlur=30*S;cx.stroke();cx.shadowBlur=0;}
   }
   cx.restore();cx.restore();
@@ -708,7 +766,7 @@ function drawTitle(a,T,S,th){
     sf.L.forEach((l,i)=>cx.fillText(l,mx,my+H2/2+52*S+(1-sp)*20*S+i*sf.px*1.25));cx.restore();}
 }
 function drawQ(a,T,S,th){
-  if(a&&(T<1.6||(a.ans&&a.done&&a.rt>=1.2)))return;
+  if(a&&(T<1.6||(a.ans&&a.done&&a.rt>=1.2+a.dl)))return;
   const mx=OW*FM.tx,my=OH*FM.ny,pulse=a?1+.06*Math.sin(T*5):1,al=a?ease((T-1.6)/.4):1;
   cx.save();cx.globalAlpha=al*.95;cx.translate(mx,my);cx.scale(pulse,pulse);cx.textAlign='center';cx.textBaseline='middle';cx.font=`400 ${(FM.land?300:230)*S}px ${FT}`;
   cx.shadowColor=th.acc;cx.shadowBlur=40*S;const g=cx.createLinearGradient(0,-100*S,0,100*S);g.addColorStop(0,'#ffffff');g.addColorStop(1,th.acc);cx.fillStyle=g;cx.fillText('?',0,0);cx.restore();
@@ -720,13 +778,44 @@ function sparks(tt,ox,oy,S,th){
   cx.restore();
 }
 function drawName(a,S,th){
-  if(!(a&&a.ans&&a.done&&a.rt>=1.2))return;
-  const p=a.rt-1.2,mx=OW*FM.tx,my=OH*FM.ny,mw=OW*(FM.land?.44:.92),txt=a.ans.toUpperCase();
+  if(!(a&&a.ans&&a.done&&a.rt>=1.2+a.dl))return;
+  const p=a.rt-1.2-a.dl,mx=OW*FM.tx,my=OH*FM.ny,mw=OW*(FM.land?.44:.92),txt=a.ans.toUpperCase();
   const f=fit(txt,mw,(FM.land?150:130)*S,56*S,2,'400',FT),lh=f.px*1.02,e=back(p/.35),sca=1+(1-e)*1.8,y0=-(f.L.length-1)*lh/2;
   cx.save();cx.globalAlpha=Math.min(1,p*6);cx.translate(mx,my);cx.scale(sca,sca);cx.textAlign='center';cx.textBaseline='middle';cx.font=`400 ${f.px}px ${FT}`;cx.lineJoin='round';
   cx.shadowColor=th.acc;cx.shadowBlur=40*S;cx.lineWidth=14*S;cx.strokeStyle='rgba(0,0,0,.7)';f.L.forEach((l,i)=>cx.strokeText(l,0,y0+i*lh));
   const g=cx.createLinearGradient(0,y0-lh/2,0,y0+f.L.length*lh);g.addColorStop(0,'#ffffff');g.addColorStop(1,th.acc);cx.shadowBlur=0;cx.fillStyle=g;f.L.forEach((l,i)=>cx.fillText(l,0,y0+i*lh));cx.restore();
   sparks(p,mx,my,S,th);
+}
+const FUNNY=[['99% WILL GUESS WRONG','Comment your answer 👇'],['ONLY A GENIUS CAN GUESS','No cheating! 😏'],['GUESS WHO IS THIS?','Hint: it is not who you think'],['WHO IS THIS?','Be honest, what did you see? 😂'],['CAN YOU GUESS?','Most people fail this one']];
+FUNNY.forEach(([t,u])=>{const b=document.createElement('button');b.type='button';b.className='chip';b.style.padding='6px 12px';b.textContent=t;b.onclick=()=>{$('t-title').value=t;$('t-sub').value=u;idle()};$('ftc').appendChild(b)});
+['WRONG! 😂','NOPE! 🤣','FAKE OUT! 😜','YOU FELL FOR IT! 🤡','LOL NO 💀'].forEach(t=>{const b=document.createElement('button');b.type='button';b.className='chip';b.style.padding='6px 12px';b.textContent=t;b.onclick=()=>{$('t-stamp').value=t};$('stc').appendChild(b)});
+function drawFun(a,S,th){
+  if(!(a&&a.fun&&a.done))return;const rt=a.rt,DL=a.dl;
+  if(a.rain&&rt>=DL+.6){
+    const q=rt-DL-.6,E=['😂','🤣','💀','😭','🤡'];cx.save();cx.fillStyle='#ffffff';cx.textAlign='center';cx.textBaseline='middle';
+    for(let i=0;i<26;i++){
+      const x=(Math.sin(i*12.9898)*.5+.5)*OW,sz=(52+(i%3)*18)*S,sp=(230+(i%5)*65)*S,
+      y=((i*.173*OH*1.3+q*sp)%(OH+240*S))-120*S;
+      cx.globalAlpha=Math.min(1,q/.5)*.95;cx.save();cx.translate(x+Math.sin(q*1.6+i)*24*S,y);cx.rotate(Math.sin(q*2+i)*.6);
+      cx.font=`${sz}px ${FP}`;cx.fillText(E[i%5],0,0);cx.restore();
+    }
+    cx.restore();
+  }
+  const st=rt-DL-1.75;
+  if(st>0){
+    const txt=($('t-stamp').value.trim()||'WRONG!').toUpperCase(),mx=PX+PW/2,my=PY+PH/2;
+    const f=fit(txt,PW*.82,150*S,46*S,2,'400',FT),lh=f.px*1.05;let mw=0;f.L.forEach(l=>{mw=Math.max(mw,cx.measureText(l).width)});
+    const bw=mw+70*S,bh=f.L.length*lh+46*S,k=1+(1-ease(st/.16))*2.6,rot=-.21+Math.sin(st*15)*Math.exp(-st*5)*.07;
+    cx.save();cx.globalAlpha=Math.min(1,st*12);cx.translate(mx,my);cx.rotate(rot);cx.scale(k,k);
+    cx.shadowColor='rgba(0,0,0,.55)';cx.shadowBlur=26*S;cx.shadowOffsetY=8*S;
+    cx.beginPath();cx.roundRect(-bw/2,-bh/2,bw,bh,18*S);cx.fillStyle='rgba(255,255,255,.9)';cx.fill();cx.shadowColor='transparent';
+    cx.lineWidth=11*S;cx.strokeStyle='#e11d48';cx.stroke();
+    cx.beginPath();cx.roundRect(-bw/2+16*S,-bh/2+16*S,bw-32*S,bh-32*S,10*S);cx.lineWidth=3.5*S;cx.stroke();
+    cx.textAlign='center';cx.textBaseline='middle';cx.font=`400 ${f.px}px ${FT}`;cx.fillStyle='#e11d48';
+    const y0=-(f.L.length-1)*lh/2;f.L.forEach((l,i)=>cx.fillText(l,0,y0+i*lh+f.px*.03));
+    cx.restore();
+    sparks(st,mx,my,S,th);
+  }
 }
 function pencil(x,y,S){
   const s=S*1.35;cx.save();cx.translate(x,y);cx.scale(s,s);
@@ -744,10 +833,10 @@ function render(a){
   let sh=0;if(a)a.imps.forEach(x=>{if(T>=x)sh=Math.max(sh,1-(T-x)/.45)});
   cx.save();if(sh>0)cx.translate((Math.random()-.5)*sh*18*S,(Math.random()-.5)*sh*18*S);
   if(srcC)drawPanel(a,T,S,th);
-  drawTitle(a,T,S,th);drawQ(a,T,S,th);drawName(a,S,th);
+  drawTitle(a,T,S,th);drawQ(a,T,S,th);drawName(a,S,th);drawFun(a,S,th);
   if(a&&a.pen&&!a.done&&T>=INTRO)pencil(PX+a.px*sc,PY+a.py*sc,S);
   cx.restore();
-  if(a&&a.done&&a.rt>=.3&&a.rt<.85){cx.fillStyle=`rgba(255,255,255,${(1-(a.rt-.3)/.55)*.85})`;cx.fillRect(0,0,OW,OH);}
+  if(a&&a.done&&a.rt>=.3+a.dl&&a.rt<.85+a.dl){cx.fillStyle=`rgba(255,255,255,${(1-(a.rt-.3-a.dl)/.55)*.85})`;cx.fillRect(0,0,OW,OH);}
   if(a&&T<.4){cx.fillStyle=`rgba(0,0,0,${1-T/.4})`;cx.fillRect(0,0,OW,OH);}
 }
 function idle(){render(null)}
@@ -773,8 +862,9 @@ function startDraw(cb){
     STR=build();paper();ax.setTransform(sc,0,0,sc,0,0);
     const speed=300*Math.pow(+$('speed').value,1.5);let eff=0;
     STR.forEach(s=>{const p=s.p;let l=0;for(let i=2;i<p.length;i+=2)l+=Math.hypot(p[i]-p[i-2],p[i+1]-p[i-1]);eff+=l/(s.k?2.2:1)});
-    const a=anim={si:0,pi:0,px:W/2,py:H/2,done:false,T:0,rt:0,speed,drawDur:eff/speed,ans:$('t-name').value.trim()||curName,col:$('o-col').checked,rev:$('o-rev').checked,pen:$('o-pen').checked,imps:[.5],f:{},last:performance.now()};
-    a.total=INTRO+a.drawDur+(a.ans?3.8:2.6);$('pgb').style.transition='none';prog(null);setTimeout(()=>$('pgb').style.transition='',60);status(`Playing… ${STR.length} strokes`);sfxIntro();bgStart(a.total);
+    const a=anim={si:0,pi:0,px:W/2,py:H/2,done:false,T:0,rt:0,speed,drawDur:eff/speed,ans:$('t-name').value.trim()||curName,col:$('o-col').checked,rev:$('o-rev').checked||!!ansC,pen:$('o-pen').checked,imps:[.5],f:{},last:performance.now()};
+    a.fun=$('o-fun').checked;a.rain=$('o-rain').checked;a.dl=a.fun?1:0;a.tail=(a.ans?3.8:2.6)+(a.fun?2.2:0);
+    a.total=INTRO+a.drawDur+a.tail;$('pgb').style.transition='none';prog(null);setTimeout(()=>$('pgb').style.transition='',60);status(`Playing… ${STR.length} strokes${ansC?' · answer image ready':''}`);sfxIntro();bgStart(a.total);
     const tick=t=>{
       if(a!==anim)return;
       const dt=Math.min(.05,(t-a.last)/1000);a.last=t;a.T+=dt;
@@ -782,10 +872,10 @@ function startDraw(cb){
         if(!a.f.start){a.f.start=1;scratchStart();riser(a.drawDur)}
         step(a,dt);scratchSet(!a.done,STR[a.si]&&STR[a.si].k,a.T);
       }
-      if(a.done&&a.doneT==null){a.doneT=a.T;a.imps.push(a.T+.3,a.T+1.2);scratchSet(false);sfxReveal(a)}
+      if(a.done&&a.doneT==null){a.doneT=a.T;a.imps.push(a.T+.3+a.dl,a.T+1.2+a.dl);if(a.fun)a.imps.push(a.T+a.dl+1.75);scratchSet(false);if(a.fun)sfxFunny(a);else sfxReveal(a)}
       if(a.done)a.rt=a.T-a.doneT;
       render(a);prog(a);
-      if(a.done&&a.rt>=(a.ans?3.8:2.6)){anim=null;stopAudio(.18);$('pgb').style.width='100%';lock(false);status('Done. Record the video or save the picture.');if(cb)cb();return}
+      if(a.done&&a.rt>=a.tail){anim=null;stopAudio(.18);$('pgb').style.width='100%';lock(false);status('Done. Record the video or save the picture.');if(cb)cb();return}
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
@@ -825,7 +915,7 @@ let hotT;document.addEventListener('dragover',()=>{$('drop').classList.add('hot'
 document.addEventListener('drop',()=>$('drop').classList.remove('hot'));
 
 /* right-hand tabs + selected-photo indicator */
-const PANES=['size','text','demo','photo','look','sound'];
+const PANES=['size','text','demo','photo','ans','look','sound'];
 function showPane(id){PANES.forEach(k=>{$('pane-'+k).classList.toggle('on',k===id);$('pt-'+k).classList.toggle('on',k===id)});try{localStorage.setItem('sk_pane',id)}catch(e){}}
 PANES.forEach(k=>$('pt-'+k).onclick=()=>showPane(k));
 function setPhoto(im,name){const c=$('phc'),x=c.getContext('2d'),k=Math.min(120/im.width,120/im.height);x.fillStyle='#fff';x.fillRect(0,0,120,120);x.drawImage(im,(120-im.width*k)/2,(120-im.height*k)/2,im.width*k,im.height*k);
