@@ -151,6 +151,24 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 .busy .ptab{pointer-events:auto}
 .busy .fm,.busy .chip,.busy .pl{opacity:.55;pointer-events:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+.fsw{position:fixed;inset:0;z-index:60;background:rgba(5,4,20,.8);backdrop-filter:blur(6px);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:18px 10px}
+.fsw[hidden]{display:none}
+.fsw-box{width:min(980px,100%);background:#141238;border:1px solid var(--line2);border-radius:22px;padding:18px 18px 20px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
+.fsw-h{display:flex;justify-content:space-between;align-items:center;gap:10px}.fsw-h h2{margin:0;font-size:18px}
+.fsw-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:720px){.fsw-cols{grid-template-columns:1fr}}
+.fsw-cv{display:flex;justify-content:center;align-items:center;background:var(--field);border:1px dashed var(--line2);border-radius:14px;min-height:200px;margin-top:10px;overflow:hidden}
+.fsw-cv canvas{max-width:100%;touch-action:none;cursor:crosshair;display:block}
+.fsw-cv .ph{color:var(--mute);font-size:12.5px;padding:20px;text-align:center}
+.fsw-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:12.5px;color:var(--mute)}
+.fsw-bar button,.fsw-row button{padding:7px 11px;font-size:12px}
+.fsw-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.fsw-tools{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin-top:6px;align-items:end}
+@media(max-width:720px){.fsw-tools{grid-template-columns:1fr}}
+.fsw-mode{display:flex;gap:8px}.fsw-mode button.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--ink);border-color:transparent}
+.fsw-res{margin-top:12px;text-align:center}.fsw-res canvas{max-width:100%;max-height:380px;border-radius:14px;border:1px solid var(--line2);background:#fff}
+.fsw-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.fsw-act button{flex:1;min-width:200px}
 </style>
 </head>
 <body>
@@ -226,6 +244,9 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <label for="url">Or paste an image link</label>
       <div class="row2"><input type="text" id="url" placeholder="https://.../photo.jpg"><button id="urlgo" type="button">Load</button></div>
       <p class="hint">Works with links that allow it, such as images from Wikimedia Commons (right click the image, copy image address).</p>
+      <div class="ch" style="margin-top:22px"><h2>🙂 Face swap</h2></div>
+      <p class="hint">Mark the face on person 1, mark the face on person 2, and only that face is placed onto person 1.</p>
+      <button type="button" class="pri fsopen" style="margin-top:10px;width:100%">Open the face swap tool</button>
     </div>
 
     <div class="card pane" id="pane-ans">
@@ -239,11 +260,14 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <div class="phv" id="phv2" hidden><canvas id="phc2" width="120" height="120"></canvas><div><b id="phn2"></b><small>This will appear at the end as the answer.</small></div><button id="phx2" type="button">Remove</button></div>
       <label for="url2">Or paste an image link</label>
       <div class="row2"><input type="text" id="url2" placeholder="https://.../answer.jpg"><button id="urlgo2" type="button">Load</button></div>
+      <button type="button" class="fsopen" style="margin-top:10px;width:100%">🙂 Make the answer with the face swap tool</button>
 
       <div class="ch" style="margin-top:22px"><h2>😂 Funny mode</h2></div>
       <p class="hint">Makes the ending a big "you guessed wrong" moment.</p>
       <label class="sw"><span><b>Funny reveal</b><small>Pause, record scratch, boing, sad trombone, stamp slam, laugh</small></span><input type="checkbox" id="o-fun" checked><i></i></label>
       <label class="sw"><span><b>Emoji rain</b><small>😂 🤣 💀 😭 🤡 fall during the reveal</small></span><input type="checkbox" id="o-rain" checked><i></i></label>
+      <label for="o-sad">Sad sound when the fake photo is revealed</label>
+      <div class="row2"><select id="o-sad"><option value="all" selected>Cry + womp womp (funniest)</option><option value="trombone">Sad trombone</option><option value="womp">Womp womp (tuba)</option><option value="cry">Baby cry, waaah 😭</option><option value="violin">Sad violin 🎻</option><option value="whistle">Fail slide whistle + thud</option></select><button id="sadtest" type="button">▶ Test</button></div>
       <label for="t-stamp">Stamp text (slams on the answer)</label>
       <input type="text" id="t-stamp" value="WRONG! 😂">
       <div class="chips" id="stc" style="margin-top:8px"></div>
@@ -251,12 +275,16 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 
     <div class="card pane" id="pane-look">
       <div class="ch"><h2>Look</h2></div>
+      <div class="lbl">Drawing style</div>
+      <div id="dsc" class="chips"></div>
+      <p class="hint" id="dshint"></p>
+      <select id="dstyle" class="hid"><option value="pencil">Pencil</option><option value="ink">Ink pen</option><option value="marker">Colour marker</option><option value="chalk">Chalk</option><option value="neon">Neon glow</option><option value="paint">Paint brush</option></select>
       <div class="rg"><div class="lb"><label for="detail">Line detail</label><output id="o-detail"></output></div><input type="range" id="detail" min="1" max="10" step="1" value="5"></div>
       <div class="rg"><div class="lb"><label for="shade">Shading</label><output id="o-shade"></output></div><input type="range" id="shade" min="0" max="10" step="1" value="6"></div>
       <div class="rg"><div class="lb"><label for="speed">Drawing speed</label><output id="o-speed"></output></div><input type="range" id="speed" min="1" max="10" step="1" value="3"></div>
-      <label class="sw"><span><b>Colour pencils</b><small>Shading takes the photo colours</small></span><input type="checkbox" id="o-col" checked><i></i></label>
+      <label class="sw"><span><b>Colour shading</b><small>Shading takes the photo colours (pencil, neon)</small></span><input type="checkbox" id="o-col" checked><i></i></label>
       <label class="sw"><span><b>Colour reveal</b><small>Full colour answer opens at the end (image 2 if set)</small></span><input type="checkbox" id="o-rev" checked><i></i></label>
-      <label class="sw"><span><b>Show the pencil</b><small>A pencil follows the drawing</small></span><input type="checkbox" id="o-pen" checked><i></i></label>
+      <label class="sw"><span><b>Show the tool</b><small>The pencil, pen or brush follows the drawing</small></span><input type="checkbox" id="o-pen" checked><i></i></label>
     </div>
 
     <div class="card pane" id="pane-sound">
@@ -276,10 +304,40 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
   </section>
 </main>
 
+
+<div id="fsw" class="fsw" hidden role="dialog" aria-modal="true" aria-label="Face swap">
+  <div class="fsw-box">
+    <div class="fsw-h"><h2>🙂 Face swap: replace only the face</h2><button id="fsx" type="button">Close</button></div>
+    <p class="hint">Upload person 1, then draw around their face. Upload person 2, then draw around their face. Only person 2's face is placed onto person 1.</p>
+    <div class="fsw-tools">
+      <div><div class="lbl">Mark the face with</div><div class="fsw-mode"><button type="button" id="fmOval" class="on">Oval (drag a box)</button><button type="button" id="fmFree">Freehand (draw around)</button></div></div>
+      <div class="rg"><div class="lb"><label for="fsoft">Edge softness</label><output id="o-fsoft"></output></div><input type="range" id="fsoft" min="0" max="40" step="1" value="14"></div>
+    </div>
+    <label class="sw"><span><b>Match skin tone</b><small>Shifts the new face colour toward person 1 so it blends in</small></span><input type="checkbox" id="fmatch" checked><i></i></label>
+    <div class="fsw-cols">
+      <div id="fcA">
+        <div class="lbl">1 · Person whose body and photo stay</div>
+        <label class="drop" for="fsfA"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span><span><b>Upload person 1</b><small>Click or drag a photo here</small></span><input type="file" id="fsfA" class="vh" accept="image/*"></label>
+        <div class="fsw-cv" id="boxA"><div class="ph">No photo yet</div></div>
+        <div class="fsw-bar"><span id="stA">Upload a photo, then draw around the face</span><button type="button" id="clrA">Clear mark</button></div>
+        <div class="fsw-row"><button type="button" id="fsAcur">Use my current image 1</button></div>
+      </div>
+      <div id="fcB">
+        <div class="lbl">2 · Person whose face is used</div>
+        <label class="drop" for="fsfB"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span><span><b>Upload person 2</b><small>Click or drag a photo here</small></span><input type="file" id="fsfB" class="vh" accept="image/*"></label>
+        <div class="fsw-cv" id="boxB"><div class="ph">No photo yet</div></div>
+        <div class="fsw-bar"><span id="stB">Upload a photo, then draw around the face</span><button type="button" id="clrB">Clear mark</button></div>
+        <div class="fsw-row"><button type="button" id="fsBans">Use my answer image 2</button></div>
+      </div>
+    </div>
+    <div class="fsw-res"><div class="lbl">Result</div><canvas id="cvR" width="10" height="10" hidden></canvas><div class="hint" id="fsRh">Mark both faces to see the result here.</div></div>
+    <div class="fsw-act"><button type="button" id="fsU1" class="pri" disabled>Use as the sketch image (1)</button><button type="button" id="fsU2" disabled>Use as the answer image (2)</button></div>
+  </div>
+</div>
 <script>
 const $=id=>document.getElementById(id),cv=$('cv'),cx=cv.getContext('2d');
 const art=document.createElement('canvas'),ax=art.getContext('2d');
-let ansC=null,ansName='',lastDemo=0,curTab='player',srcC=null,W=720,H=720,OW=1920,OH=1080,PX=0,PY=0,PW=720,PH=720,sc=1,STR=[],anim=null,busy=false,curName='',bgc=null,bgk='';
+let SD=null,ansC=null,ansName='',lastDemo=0,curTab='player',srcC=null,W=720,H=720,OW=1920,OH=1080,PX=0,PY=0,PW=720,PH=720,sc=1,STR=[],anim=null,busy=false,curName='',bgc=null,bgk='';
 const clamp01=x=>Math.min(1,Math.max(0,x)),ease=x=>1-Math.pow(1-clamp01(x),3),back=x=>{x=clamp01(x);const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
 const status=m=>{$('stt').textContent=m};
 const fmtT=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
@@ -288,7 +346,16 @@ const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),ra=(h,a)=>`rgba(${rgb(h
 const colA=(r,g,b)=>{const cl=v=>Math.max(0,Math.min(255,Math.round(v))),m=(r+g+b)/3*1.25,f=1.7;return `rgba(${cl(m+(r*1.25-m)*f)},${cl(m+(g*1.25-m)*f)},${cl(m+(b*1.25-m)*f)},.62)`};
 
 const PAPERS={cream:{bg:'#f4ecd8',e:'rgba(28,28,34,.85)',h:'rgba(40,40,50,.30)',dots:'rgba(120,100,60,'},white:{bg:'#ffffff',e:'rgba(25,25,30,.85)',h:'rgba(35,35,45,.30)',dots:'rgba(120,120,120,'},board:{bg:'#1f2e27',e:'rgba(245,245,240,.88)',h:'rgba(245,245,240,.26)',dots:'rgba(255,255,255,'}};
-const P=()=>PAPERS[$('paper').value];
+PAPERS.black={bg:'#05050c',e:'rgba(255,255,255,.9)',h:'rgba(255,255,255,.2)',dots:'rgba(255,255,255,'};
+const DSTY={
+  pencil:{label:'Pencil',sw:'linear-gradient(135deg,#ffc933,#f2c48d)',hint:'Classic pencil sketch with shading.',tool:{body:'#ffc933',tip:'#f2c48d',lead:'#2a2a2a',cap:'#ff6b6b',band:'#e0a800'}},
+  ink:{label:'Ink pen',sw:'linear-gradient(135deg,#111,#555)',hint:'Bold black ink lines with fine cross-hatching.',tool:{body:'#2b2b33',tip:'#cfd3da',lead:'#111',cap:'#111',band:'#9aa0aa'}},
+  marker:{label:'Colour marker',sw:'linear-gradient(135deg,#ef4444,#f59e0b,#3b82f6)',hint:'Thick felt-tip lines coloured from the photo.',tool:{body:'#3b82f6',tip:'cur',lead:'cur',cap:'#1e3a8a',band:'#e5e7eb'}},
+  chalk:{label:'Chalk',sw:'linear-gradient(135deg,#1f2e27,#f5f5f0)',paper:'board',hint:'White chalk on a dark board (board is used automatically).',tool:{body:'#f2f2ee',tip:'#e4e4dc',lead:'#ffffff',cap:'#d8d8cf',band:'#cfcfc4'}},
+  neon:{label:'Neon glow',sw:'linear-gradient(135deg,#00e5ff,#ff2bd6)',paper:'black',hint:'Glowing neon lines on black (black paper is used automatically).',tool:{body:'#1b1038',tip:'#00e5ff',lead:'#ffffff',cap:'#ff2bd6',band:'#7cffb2'}},
+  paint:{label:'Paint brush',sw:'linear-gradient(135deg,#f97316,#22c55e,#6366f1)',hint:'Wide coloured brush strokes with dark outlines.',tool:{body:'#c98a4b',tip:'cur',lead:'cur',cap:'#7a4a1d',band:'#b8bcc4'}}};
+const DS=()=>DSTY[$('dstyle').value]||DSTY.pencil;
+const P=()=>PAPERS[DS().paper||$('paper').value];
 const THEMES={
 stadium:{id:'stadium',bg:['#10205c','#050816'],c1:'#3b82f6',c2:'#a855f7',acc:'#ffd23f'},
 fire:{id:'fire',bg:['#541010','#120304'],c1:'#ff4d2d',c2:'#ff9f1c',acc:'#ffd166'},
@@ -458,13 +525,30 @@ function bgStart(T){
   }
 }
 function sfxIntro(){nz(0,.6,200,4200,.26,.7,[-.7,.7]);boom(.5,.6);sweep(520,980,1.0,.25,.1,'sine');nz(1.1,.6,400,2400,.14,.8,[.6,-.6]);}
+/* wobbly voice: pitch f1 -> fp -> f2, vibrato, optional formant (bp) for a crying "waaah" */
+function wob(f1,fp,f2,at,d,v,o){if(!SFX())return;const t=ac.currentTime+at,osc=ac.createOscillator(),g=ac.createGain(),lfo=ac.createOscillator(),lg=ac.createGain(),fl=ac.createBiquadFilter();
+  osc.type='sawtooth';osc.frequency.setValueAtTime(f1,t);osc.frequency.linearRampToValueAtTime(fp,t+d*.25);osc.frequency.linearRampToValueAtTime(f2,t+d);
+  lfo.frequency.value=o.rate;lg.gain.value=o.depth;lfo.connect(lg);lg.connect(osc.frequency);
+  if(o.bp){fl.type='bandpass';fl.Q.value=3;fl.frequency.setValueAtTime(o.bp[0],t);fl.frequency.linearRampToValueAtTime(o.bp[1],t+d*.3);fl.frequency.linearRampToValueAtTime(o.bp[2],t+d)}
+  else{fl.type='lowpass';fl.frequency.value=o.cut||1800;fl.Q.value=.5}
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+(o.att||.05));g.gain.setValueAtTime(v,t+d*.7);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  osc.connect(fl);fl.connect(g);out(g);osc.start(t);lfo.start(t);osc.stop(t+d+.05);lfo.stop(t+d+.05);srcs.push(osc,lfo);}
+function sadSound(k,D){
+  const T=D+.3,
+  trombone=()=>{[[311,0],[294,.45],[277,.9]].forEach(([f,t])=>tone(f,T+t,.42,.2,'sawtooth'));sweep(262,196,T+1.35,1,.1,'sawtooth');tone(262,T+1.35,.9,.16,'sawtooth')},
+  womp=()=>{[[155,0],[146,.36],[138,.72]].forEach(([f,t])=>tone(f,T+t,.34,.3,'sawtooth'));wob(130,130,78,T+1.1,.65,.32,{rate:5,depth:6,cut:520})},
+  cry=()=>{wob(420,570,360,T,.75,.42,{rate:7,depth:22,bp:[800,1500,900]});wob(470,610,330,T+.85,.85,.42,{rate:7.5,depth:24,bp:[850,1600,850]});
+    nz(T+.78,.1,3200,2200,.12,2,null,true);nz(T+.84,.08,3000,2000,.1,2,null,true)},
+  violin=()=>{wob(392,392,330,T,1.5,.15,{rate:5.5,depth:7,cut:2200,att:.15});wob(588,588,495,T,1.5,.06,{rate:5.5,depth:10,cut:3000,att:.15})},
+  whistle=()=>{sweep(1500,140,T,.95,.16,'sine');sweep(1510,142,T,.95,.05,'triangle');boom(T+1,.8);nz(T+1,.25,1800,300,.25,.8,null,true)};
+  if(k==='trombone')trombone();else if(k==='womp')womp();else if(k==='cry')cry();else if(k==='violin')violin();else if(k==='whistle')whistle();else{womp();cry()}
+}
 function sfxFunny(a){
   const D=a.dl;
   nz(0,.42,3200,350,.34,1.6);sweep(900,120,0,.4,.07,'sawtooth');            /* record scratch */
   sweep(180,760,D,.22,.2,'sine');sweep(760,300,D+.2,.26,.14,'sine');          /* boing */
   nz(D+.1,2.2,600,1500,.12,.6,[-.3,.3]);
-  [[311,.0,.42],[294,.45,.42],[277,.9,.42]].forEach(([f,t,d])=>{tone(f,D+.3+t,d,.2,'sawtooth')});   /* sad trombone: wah wah wah */
-  sweep(262,196,D+1.65,1.0,.1,'sawtooth');tone(262,D+1.65,.9,.16,'sawtooth');
+  sadSound($('o-sad').value,D);                                                /* chosen sad sound */
   const S0=D+1.75;boom(S0,1);nz(S0,.3,2400,300,.3,.8,null,true);              /* stamp slam */
   for(let i=0;i<7;i++){const t=S0+.3+i*.19,f=250-i*9;nz(t,.12,950,650,.2,2.6,null,true);tone(f,t,.14,.13,'sawtooth');tone(f*1.5,t+.02,.1,.05,'sawtooth');} /* ha ha ha ha */
   if(a.ans){tone(196,S0+1.7,.4,.12,'sawtooth');}
@@ -588,6 +672,7 @@ function loadURL(u){u=u.trim();if(!u)return;status('Loading the image…');const
   im.onerror=()=>status('That link could not be loaded. Try a Wikimedia Commons image address, or put the photo in the players folder (see below).');im.src=u;}
 $('urlgo').onclick=()=>loadURL($('url').value);
 $('file2').onchange=e=>loadAnswerFile(e.target.files[0]);
+$('sadtest').onclick=()=>{ensure();stopAudio(.02);sadSound($('o-sad').value,0)};
 $('urlgo2').onclick=()=>loadAnswerURL($('url2').value);
 $('url2').onkeydown=e=>{if(e.key==='Enter')loadAnswerURL($('url2').value)};
 $('phx2').onclick=()=>{if(!busy)clearAnswer()};
@@ -625,7 +710,7 @@ function blur(a,w,h){const o=new Float32Array(a.length);
   return o}
 
 function build(){
-  const d=srcC.getContext('2d').getImageData(0,0,W,H).data,n=W*H;
+  const d=srcC.getContext('2d').getImageData(0,0,W,H).data,n=W*H;SD=d;
   let g=new Float32Array(n);
   for(let i=0;i<n;i++)g[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];
   const hist=new Uint32Array(256);for(let i=0;i<n;i++)hist[g[i]|0]++;
@@ -817,13 +902,15 @@ function drawFun(a,S,th){
     sparks(st,mx,my,S,th);
   }
 }
-function pencil(x,y,S){
+function pencil(x,y,S,a){
+  const tl=DS().tool,cur=(a&&a.cur)||'#e11d48',C=v=>v==='cur'?cur:v;
   const s=S*1.35;cx.save();cx.translate(x,y);cx.scale(s,s);
+  if(a&&a.style==='neon'){const g=cx.createRadialGradient(0,0,0,0,0,34);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(.25,ra(cur.startsWith('#')?cur:'#00e5ff',.55));g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(-34,-34,68,68)}
   const poly=(pts,f)=>{cx.beginPath();pts.forEach((q,i)=>i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]));cx.closePath();cx.fillStyle=f;cx.fill()};
   cx.shadowColor='rgba(0,0,0,.4)';cx.shadowBlur=8;cx.shadowOffsetY=4;
-  poly([[8,-14],[14,-8],[72,-66],[66,-72]],'#ffc933');cx.shadowColor='transparent';
-  poly([[0,0],[8,-14],[14,-8]],'#f2c48d');poly([[0,0],[3,-5.2],[5.2,-3]],'#2a2a2a');
-  poly([[66,-72],[72,-66],[77,-71],[71,-77]],'#ff6b6b');poly([[40,-46],[46,-40],[50,-44],[44,-50]],'#e0a800');
+  poly([[8,-14],[14,-8],[72,-66],[66,-72]],tl.body);cx.shadowColor='transparent';
+  poly([[0,0],[8,-14],[14,-8]],C(tl.tip));poly([[0,0],[3,-5.2],[5.2,-3]],C(tl.lead));
+  poly([[66,-72],[72,-66],[77,-71],[71,-77]],tl.cap);poly([[40,-46],[46,-40],[50,-44],[44,-50]],tl.band);
   cx.restore();
 }
 function render(a){
@@ -834,7 +921,7 @@ function render(a){
   cx.save();if(sh>0)cx.translate((Math.random()-.5)*sh*18*S,(Math.random()-.5)*sh*18*S);
   if(srcC)drawPanel(a,T,S,th);
   drawTitle(a,T,S,th);drawQ(a,T,S,th);drawName(a,S,th);drawFun(a,S,th);
-  if(a&&a.pen&&!a.done&&T>=INTRO)pencil(PX+a.px*sc,PY+a.py*sc,S);
+  if(a&&a.pen&&!a.done&&T>=INTRO)pencil(PX+a.px*sc,PY+a.py*sc,S,a);
   cx.restore();
   if(a&&a.done&&a.rt>=.3+a.dl&&a.rt<.85+a.dl){cx.fillStyle=`rgba(255,255,255,${(1-(a.rt-.3-a.dl)/.55)*.85})`;cx.fillRect(0,0,OW,OH);}
   if(a&&T<.4){cx.fillStyle=`rgba(0,0,0,${1-T/.4})`;cx.fillRect(0,0,OW,OH);}
@@ -843,6 +930,19 @@ function idle(){render(null)}
 
 /* ---------- animation ---------- */
 function ink(s,a){const p=P();ax.lineCap='round';if(s.k){ax.strokeStyle=(a.col&&s.c)?s.c:p.h;ax.lineWidth=1.25}else{ax.strokeStyle=p.e;ax.lineWidth=1.7}}
+const vivid=(r,g,b,al,k)=>{const cl=v=>Math.max(0,Math.min(255,Math.round(v))),m=(r+g+b)/3,f=1.6;return `rgba(${cl((m+(r-m)*f)*k)},${cl((m+(g-m)*f)*k)},${cl((m+(b-m)*f)*k)},${al})`};
+function colAt(x,y,al,k){const xi=Math.max(0,Math.min(W-1,x|0)),yi=Math.max(0,Math.min(H-1,y|0)),i=(yi*W+xi)*4;return SD?vivid(SD[i],SD[i+1],SD[i+2],al,k):`rgba(60,60,60,${al})`}
+function seg(s,a,x0,y0,x1,y1){
+  const st=a.style,p=P();ax.lineCap='round';ax.lineJoin='round';
+  const L=(w,c,al,dx,dy)=>{ax.globalAlpha=al==null?1:al;ax.strokeStyle=c;ax.lineWidth=w;ax.beginPath();ax.moveTo(x0+(dx||0),y0+(dy||0));ax.lineTo(x1+(dx||0),y1+(dy||0));ax.stroke();ax.globalAlpha=1};
+  if(st==='ink'){if(s.k)L(1.0,'#1a1a22',.5);else L(2.9,'#12121a',1)}
+  else if(st==='marker'){a.cur=colAt(x1,y1,1,.9);if(s.k)L(3.2,s.c||colAt(x1,y1,.6,1),.55);else L(4.6,a.cur,.95)}
+  else if(st==='chalk'){if(s.k)L(2.4,'rgba(240,240,232,.9)',.2);else{L(3.3,'rgba(250,250,244,.8)',1);L(1.3,'rgba(255,255,255,.55)',1,.9,-.7);L(1.1,'rgba(255,255,255,.4)',1,-.8,.8)}}
+  else if(st==='neon'){const th=TH(),cs=[th.c1,th.c2,th.acc],c=(s.k&&a.col)?colAt(x1,y1,1,1.2):cs[a.si%3];a.cur=c;
+    if(s.k)L(1.7,c,.42);else{L(10,c,.16);L(5,c,.4);L(2,'#ffffff',.95)}}
+  else if(st==='paint'){a.cur=colAt(x1,y1,1,.95);if(s.k)L(7,s.c||colAt(x1,y1,.55,1),.5);else L(3.2,'rgba(35,22,22,.75)',1)}
+  else{ink(s,a);ax.beginPath();ax.moveTo(x0,y0);ax.lineTo(x1,y1);ax.stroke()}
+}
 function step(a,dt){
   let b=dt*a.speed;
   while(b>0&&a.si<STR.length){
@@ -850,7 +950,7 @@ function step(a,dt){
     if(a.pi===0){a.pi=2;a.px=p[0];a.py=p[1]}
     if(a.pi>=p.length){a.si++;a.pi=0;continue}
     const x=p[a.pi],y=p[a.pi+1],len=Math.hypot(x-a.px,y-a.py);
-    ink(s,a);ax.beginPath();ax.moveTo(a.px,a.py);ax.lineTo(x,y);ax.stroke();
+    seg(s,a,a.px,a.py,x,y);
     b-=Math.max(len,.5)/m;a.px=x;a.py=y;a.pi+=2;
   }
   if(a.si>=STR.length)a.done=true;
@@ -862,7 +962,7 @@ function startDraw(cb){
     STR=build();paper();ax.setTransform(sc,0,0,sc,0,0);
     const speed=300*Math.pow(+$('speed').value,1.5);let eff=0;
     STR.forEach(s=>{const p=s.p;let l=0;for(let i=2;i<p.length;i+=2)l+=Math.hypot(p[i]-p[i-2],p[i+1]-p[i-1]);eff+=l/(s.k?2.2:1)});
-    const a=anim={si:0,pi:0,px:W/2,py:H/2,done:false,T:0,rt:0,speed,drawDur:eff/speed,ans:$('t-name').value.trim()||curName,col:$('o-col').checked,rev:$('o-rev').checked||!!ansC,pen:$('o-pen').checked,imps:[.5],f:{},last:performance.now()};
+    const a=anim={si:0,pi:0,px:W/2,py:H/2,done:false,T:0,rt:0,speed,drawDur:eff/speed,ans:$('t-name').value.trim()||curName,col:$('o-col').checked,rev:$('o-rev').checked||!!ansC,pen:$('o-pen').checked,style:$('dstyle').value,cur:'#e11d48',imps:[.5],f:{},last:performance.now()};
     a.fun=$('o-fun').checked;a.rain=$('o-rain').checked;a.dl=a.fun?1:0;a.tail=(a.ans?3.8:2.6)+(a.fun?2.2:0);
     a.total=INTRO+a.drawDur+a.tail;$('pgb').style.transition='none';prog(null);setTimeout(()=>$('pgb').style.transition='',60);status(`Playing… ${STR.length} strokes${ansC?' · answer image ready':''}`);sfxIntro();bgStart(a.total);
     const tick=t=>{
@@ -945,12 +1045,76 @@ setTab('player',false);
 /* ---------- start ---------- */
 ['t-title','t-sub','o-theme'].forEach(id=>$(id).oninput=$(id).onchange=()=>{if(!busy)idle()});
 $('paper').onchange=()=>{if(!busy)layout()};
+chips('dstyle','dsc',Object.entries(DSTY).map(([k,v])=>[k,v.label,v.sw]));
+$('dstyle').onchange=()=>{$('dshint').textContent=DS().hint;if(!busy&&srcC)layout()};$('dshint').textContent=DS().hint;
 (function(){
   let f=FORMATS[0];try{f=FORMATS.find(x=>x.id===localStorage.getItem('sk_fmt'))||f}catch(e){}
   FM=f;OW=f.w;OH=f.h;[...$('fl').children].forEach((b,i)=>b.classList.toggle('on',FORMATS[i]===f));
   selectPlayer(1);
   Promise.all(['400 60px "Bebas Neue"','700 30px "Poppins"','700 30px "Hind Siliguri"'].map(x=>document.fonts.load(x))).then(()=>{if(!busy)idle()}).catch(()=>{});
 })();
+
+/* ---------- face swap: mark a face on each photo, place only that face onto person 1 ---------- */
+const FS={A:null,B:null,mode:'oval',R:null};
+const fsBB=pl=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;pl.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});return{x:x0,y:y0,w:x1-x0,h:y1-y0}};
+const fsEll=(a,b)=>{const cx0=(a[0]+b[0])/2,cy0=(a[1]+b[1])/2,rx=Math.abs(b[0]-a[0])/2,ry=Math.abs(b[1]-a[1])/2,pl=[];for(let i=0;i<72;i++){const t=i/72*Math.PI*2;pl.push([cx0+rx*Math.cos(t),cy0+ry*Math.sin(t)])}return pl};
+function fsLoad(side,src){
+  const k=Math.min(1,900/Math.max(src.width,src.height)),wk=document.createElement('canvas');wk.width=Math.max(1,Math.round(src.width*k));wk.height=Math.max(1,Math.round(src.height*k));
+  const c=wk.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,wk.width,wk.height);c.drawImage(src,0,0,wk.width,wk.height);
+  const box=$('box'+side);box.innerHTML='';const cv=document.createElement('canvas');cv.id='cv'+side;box.appendChild(cv);
+  const o=FS[side]={wk,poly:null,live:null,pts:null,start:null,down:false,cv,ks:1};
+  const avail=Math.max(200,Math.min(440,box.clientWidth-4||440)),ks=Math.min(avail/wk.width,430/wk.height,1.5);o.ks=ks;cv.width=Math.round(wk.width*ks);cv.height=Math.round(wk.height*ks);
+  const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*(cv.width/r.width)/ks,(e.clientY-r.top)*(cv.height/r.height)/ks]};
+  cv.onpointerdown=e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);o.start=pt(e);o.pts=[o.start];o.live=null;o.down=true;o.poly=null;fsStat(side);fsCompose()};
+  cv.onpointermove=e=>{if(!o.down)return;const p=pt(e);if(FS.mode==='oval')o.live=fsEll(o.start,p);else{const l=o.pts[o.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>3/ks)o.pts.push(p);o.live=o.pts.slice()}fsDraw(side)};
+  const up=()=>{if(!o.down)return;o.down=false;const l=o.live;o.live=null;
+    if(l&&l.length>=8){const b=fsBB(l);if(b.w>10&&b.h>10)o.poly=l}fsDraw(side);fsStat(side);fsCompose()};
+  cv.onpointerup=up;cv.onpointercancel=up;
+  fsDraw(side);fsStat(side);fsCompose();
+}
+function fsDraw(side){
+  const o=FS[side];if(!o)return;const cv=o.cv,c=cv.getContext('2d'),ks=o.ks;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,cv.width,cv.height);c.drawImage(o.wk,0,0,cv.width,cv.height);
+  const pl=o.live||o.poly;if(!pl||pl.length<2)return;
+  const path=()=>{c.beginPath();pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));if(o.live&&FS.mode==='free'&&o.down){}else c.closePath()};
+  if(!(o.live&&FS.mode==='free'&&o.down)){c.save();c.fillStyle='rgba(5,4,20,.55)';c.beginPath();c.rect(0,0,cv.width,cv.height);pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));c.closePath();c.fill('evenodd');c.restore()}
+  path();c.lineWidth=2.5;c.strokeStyle='#ffc933';c.setLineDash([7,5]);c.stroke();c.setLineDash([]);
+}
+function fsStat(side){const o=FS[side];$('st'+side).textContent=!o?'Upload a photo, then draw around the face':o.poly?'✓ Face marked. Draw again to change it':'Now draw around the face'}
+function fsCompose(){
+  const A=FS.A,B=FS.B,res=$('cvR'),ok=A&&B&&A.poly&&B.poly;FS.R=null;$('fsU1').disabled=$('fsU2').disabled=true;
+  if(!ok){res.hidden=true;$('fsRh').hidden=false;$('fsRh').textContent=!A||!B?'Upload both photos, then mark both faces.':'Mark both faces to see the result here.';return}
+  const soft=+$('fsoft').value,m=Math.ceil(soft*2)+6,bA=fsBB(A.poly),bB=fsBB(B.poly),fw=Math.ceil(bA.w+2*m),fh=Math.ceil(bA.h+2*m),ox=bA.x-m,oy=bA.y-m;
+  const F=document.createElement('canvas');F.width=fw;F.height=fh;const f=F.getContext('2d',{willReadFrequently:true});
+  const kx=bB.w/bA.w,ky=bB.h/bA.h;f.drawImage(B.wk,bB.x-m*kx,bB.y-m*ky,fw*kx,fh*ky,0,0,fw,fh);
+  const polyF=A.poly.map(([x,y])=>[x-ox,y-oy]);
+  if($('fmatch').checked){
+    const H=document.createElement('canvas');H.width=fw;H.height=fh;const h=H.getContext('2d',{willReadFrequently:true});h.fillStyle='#000';h.beginPath();polyF.forEach(([x,y],i)=>i?h.lineTo(x,y):h.moveTo(x,y));h.closePath();h.fill();
+    const T=document.createElement('canvas');T.width=fw;T.height=fh;const t=T.getContext('2d',{willReadFrequently:true});t.drawImage(A.wk,ox,oy,fw,fh,0,0,fw,fh);
+    const mk=h.getImageData(0,0,fw,fh).data,fa=t.getImageData(0,0,fw,fh).data,fd=f.getImageData(0,0,fw,fh),fb=fd.data;let sa=[0,0,0],sb=[0,0,0],n=0;
+    for(let i=0;i<mk.length;i+=8){if(mk[i+3]>128){for(let q=0;q<3;q++){sa[q]+=fa[i+q];sb[q]+=fb[i+q]}n++}}
+    if(n>20){const sh=[0,1,2].map(q=>(sa[q]-sb[q])/n*.8);for(let i=0;i<fb.length;i+=4)for(let q=0;q<3;q++)fb[i+q]=Math.max(0,Math.min(255,fb[i+q]+sh[q]));f.putImageData(fd,0,0)}
+  }
+  const M=document.createElement('canvas');M.width=fw;M.height=fh;const mc=M.getContext('2d'),OFF=fw+soft*4+60;
+  mc.shadowColor='#000';mc.shadowBlur=soft;mc.shadowOffsetX=OFF;mc.fillStyle='#000';mc.beginPath();polyF.forEach(([x,y],i)=>i?mc.lineTo(x-OFF,y):mc.moveTo(x-OFF,y));mc.closePath();mc.fill();
+  f.globalCompositeOperation='destination-in';f.drawImage(M,0,0);f.globalCompositeOperation='source-over';
+  const R=document.createElement('canvas');R.width=A.wk.width;R.height=A.wk.height;const r=R.getContext('2d');r.drawImage(A.wk,0,0);r.drawImage(F,ox,oy);FS.R=R;
+  const k=Math.min(1,520/R.width,380/R.height);res.width=Math.round(R.width*k);res.height=Math.round(R.height*k);res.getContext('2d').drawImage(R,0,0,res.width,res.height);res.hidden=false;$('fsRh').hidden=true;$('fsU1').disabled=$('fsU2').disabled=false;
+}
+function fsFile(side,f){if(!f||!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>fsLoad(side,im);im.src=r.result};r.readAsDataURL(f)}
+function fsCopy(c){const d=document.createElement('canvas');d.width=c.width;d.height=c.height;d.getContext('2d').drawImage(c,0,0);return d}
+$('fsfA').onchange=e=>fsFile('A',e.target.files[0]);$('fsfB').onchange=e=>fsFile('B',e.target.files[0]);
+['A','B'].forEach(sd=>{const d=document.querySelector('#fc'+sd+' .drop');['dragover','dragenter'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation()}));d.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();fsFile(sd,e.dataTransfer.files[0])});
+  $('clr'+sd).onclick=()=>{const o=FS[sd];if(!o)return;o.poly=null;o.live=null;fsDraw(sd);fsStat(sd);fsCompose()}});
+$('fsAcur').onclick=()=>{if(srcC)fsLoad('A',srcC);else $('stA').textContent='There is no image 1 yet'};
+$('fsBans').onclick=()=>{if(ansC)fsLoad('B',ansC);else $('stB').textContent='There is no answer image 2 yet'};
+$('fmOval').onclick=()=>{FS.mode='oval';$('fmOval').classList.add('on');$('fmFree').classList.remove('on')};
+$('fmFree').onclick=()=>{FS.mode='free';$('fmFree').classList.add('on');$('fmOval').classList.remove('on')};
+$('fsoft').addEventListener('input',()=>fsCompose());$('fmatch').addEventListener('change',()=>fsCompose());
+const fsClose=()=>{$('fsw').hidden=true;document.body.style.overflow=''};
+document.querySelectorAll('.fsopen').forEach(b=>b.onclick=()=>{if(busy)return;$('fsw').hidden=false;document.body.style.overflow='hidden';$('fsw').scrollTop=0});
+$('fsx').onclick=fsClose;$('fsw').addEventListener('pointerdown',e=>{if(e.target===$('fsw'))fsClose()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('fsw').hidden)fsClose()});
+$('fsU1').onclick=()=>{if(!FS.R)return;const R=fsCopy(FS.R);[...$('pg').children].forEach(b=>b.classList.remove('on'));curName='';useImage(R);setPhoto(R,'Face swap');fsClose();status('Face swap is set as the sketch image. Press Play it.')};
+$('fsU2').onclick=()=>{if(!FS.R)return;useAnswer(fsCopy(FS.R),'Face swap');fsClose()};
 </script>
 </body>
 </html>
