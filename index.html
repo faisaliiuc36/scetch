@@ -199,8 +199,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <button type="button" class="ptab" id="pt-size"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h3M17 15h-3"/></svg><span>Size</span></button>
       <button type="button" class="ptab" id="pt-text"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2M9 19h6M12 5v14"/></svg><span>Text</span></button>
       <button type="button" class="ptab" id="pt-demo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.5 0 4 2 4 5"/></svg><span>Demo</span></button>
-      <button type="button" class="ptab" id="pt-photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg><span>Photo</span></button>
-      <button type="button" class="ptab" id="pt-ans"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m8 12 3 3 5-6"/></svg><span>Answer</span></button>
+      <button type="button" class="ptab" id="pt-photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg><span>Real photo</span></button>
+      <button type="button" class="ptab" id="pt-ans"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m8 12 3 3 5-6"/></svg><span>Fake photo</span></button>
       <button type="button" class="ptab" id="pt-look"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Look</span></button>
       <button type="button" class="ptab" id="pt-sound"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>Sound</span></button>
     </nav>
@@ -223,6 +223,15 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <div id="ppc" class="chips"></div>
       <select id="o-theme" class="hid"><option value="stadium">Stadium night</option><option value="fire">Fire</option><option value="neon">Neon</option><option value="emerald">Emerald</option></select>
       <select id="paper" class="hid"><option value="cream">Cream paper</option><option value="white">White paper</option><option value="board">Chalkboard</option></select>
+      <div class="ch" style="margin-top:22px"><h2>😂 Funny ending</h2></div>
+      <p class="hint">Makes the ending a big "you guessed wrong" moment.</p>
+      <label class="sw"><span><b>Funny reveal</b><small>Pause, record scratch, boing, sad trombone, stamp slam, laugh</small></span><input type="checkbox" id="o-fun" checked><i></i></label>
+      <label class="sw"><span><b>Emoji rain</b><small>😂 🤣 💀 😭 🤡 fall during the reveal</small></span><input type="checkbox" id="o-rain" checked><i></i></label>
+      <label for="o-sad">Sad sound at the reveal</label>
+      <div class="row2"><select id="o-sad"><option value="all" selected>Cry + womp womp (funniest)</option><option value="trombone">Sad trombone</option><option value="womp">Womp womp (tuba)</option><option value="cry">Baby cry, waaah 😭</option><option value="violin">Sad violin 🎻</option><option value="whistle">Fail slide whistle + thud</option></select><button id="sadtest" type="button">▶ Test</button></div>
+      <label for="t-stamp">Stamp text (slams on the answer)</label>
+      <input type="text" id="t-stamp" value="WRONG! 😂">
+      <div class="chips" id="stc" style="margin-top:8px"></div>
     </div>
 
     <div class="card pane" id="pane-demo">
@@ -233,44 +242,50 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
     </div>
 
     <div class="card pane" id="pane-photo">
-      <div class="ch"><h2>1 · Guess image</h2></div>
-      <p class="hint">This is the picture that gets <b>sketched</b>. People guess from this one.</p>
+      <div class="ch"><h2>Real photo</h2></div>
+      <p class="hint">The picture people try to guess. This is the one that gets <b>sketched</b>.</p>
       <label class="drop" id="drop" for="file">
         <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span>
-        <span><b>Choose an image</b><small>Click, drag an image onto the page, or press Ctrl+V</small></span>
+        <span><b>Choose the real photo</b><small>Click, drag an image onto the page, or press Ctrl+V</small></span>
         <input type="file" id="file" class="vh" accept="image/*">
       </label>
       <div class="phv" id="phv" hidden><canvas id="phc" width="120" height="120"></canvas><div><b id="phn"></b><small>Selected. It is shown in the preview on the left.</small></div><button id="phx" type="button">Remove</button></div>
       <label for="url">Or paste an image link</label>
       <div class="row2"><input type="text" id="url" placeholder="https://.../photo.jpg"><button id="urlgo" type="button">Load</button></div>
       <p class="hint">Works with links that allow it, such as images from Wikimedia Commons (right click the image, copy image address).</p>
-      <div class="ch" style="margin-top:22px"><h2>🙂 Face swap</h2></div>
-      <p class="hint">Mark the face on person 1, mark the face on person 2, and only that face is placed onto person 1.</p>
-      <button type="button" class="pri fsopen" style="margin-top:10px;width:100%">Open the face swap tool</button>
+
+      <div class="ch" style="margin-top:22px"><h2>🙂 Mark the face on the real photo</h2></div>
+      <p class="hint">Optional. Only needed if you want the fake photo's face placed here. Draw around the face on the picture below.</p>
+      <div style="margin-top:10px"><div class="fsw-mode"><button type="button" class="fmb on" data-m="oval">Oval (drag a box)</button><button type="button" class="fmb" data-m="free">Freehand (draw around)</button></div></div>
+      <div class="fsw-cv" id="boxA"><div class="ph">Choose a photo above (or a character in the Demo tab).</div></div>
+      <div class="fsw-bar"><span id="stA">Draw around the face</span><button type="button" id="clrA">Clear mark</button></div>
+      <p class="hint" id="fsmsgA"></p>
     </div>
 
     <div class="card pane" id="pane-ans">
-      <div class="ch"><h2>2 · Answer image (output)</h2></div>
-      <p class="hint">Optional. The sketch is drawn from image 1, but the <b>final colour reveal shows this image</b>. Leave it empty to reveal image 1 as before.</p>
+      <div class="ch"><h2>Fake photo</h2></div>
+      <p class="hint">The final answer. The ending reveals this person's face on the real photo, or the whole fake photo if you do not mark faces.</p>
       <label class="drop" id="drop2" for="file2">
         <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span>
-        <span><b>Choose the answer image</b><small>Click or drag an image here</small></span>
+        <span><b>Choose the fake photo</b><small>Click or drag an image here</small></span>
         <input type="file" id="file2" class="vh" accept="image/*">
       </label>
-      <div class="phv" id="phv2" hidden><canvas id="phc2" width="120" height="120"></canvas><div><b id="phn2"></b><small>This will appear at the end as the answer.</small></div><button id="phx2" type="button">Remove</button></div>
+      <div class="phv" id="phv2" hidden><canvas id="phc2" width="120" height="120"></canvas><div><b id="phn2"></b><small>This is the fake photo.</small></div><button id="phx2" type="button">Remove</button></div>
       <label for="url2">Or paste an image link</label>
-      <div class="row2"><input type="text" id="url2" placeholder="https://.../answer.jpg"><button id="urlgo2" type="button">Load</button></div>
-      <button type="button" class="fsopen" style="margin-top:10px;width:100%">🙂 Make the answer with the face swap tool</button>
+      <div class="row2"><input type="text" id="url2" placeholder="https://.../fake.jpg"><button id="urlgo2" type="button">Load</button></div>
 
-      <div class="ch" style="margin-top:22px"><h2>😂 Funny mode</h2></div>
-      <p class="hint">Makes the ending a big "you guessed wrong" moment.</p>
-      <label class="sw"><span><b>Funny reveal</b><small>Pause, record scratch, boing, sad trombone, stamp slam, laugh</small></span><input type="checkbox" id="o-fun" checked><i></i></label>
-      <label class="sw"><span><b>Emoji rain</b><small>😂 🤣 💀 😭 🤡 fall during the reveal</small></span><input type="checkbox" id="o-rain" checked><i></i></label>
-      <label for="o-sad">Sad sound when the fake photo is revealed</label>
-      <div class="row2"><select id="o-sad"><option value="all" selected>Cry + womp womp (funniest)</option><option value="trombone">Sad trombone</option><option value="womp">Womp womp (tuba)</option><option value="cry">Baby cry, waaah 😭</option><option value="violin">Sad violin 🎻</option><option value="whistle">Fail slide whistle + thud</option></select><button id="sadtest" type="button">▶ Test</button></div>
-      <label for="t-stamp">Stamp text (slams on the answer)</label>
-      <input type="text" id="t-stamp" value="WRONG! 😂">
-      <div class="chips" id="stc" style="margin-top:8px"></div>
+      <div class="ch" style="margin-top:22px"><h2>🙂 Mark the face on the fake photo</h2></div>
+      <p class="hint">Draw around the face on the picture below. Do the same on the real photo in the Real photo tab.</p>
+      <div style="margin-top:10px"><div class="fsw-mode"><button type="button" class="fmb on" data-m="oval">Oval (drag a box)</button><button type="button" class="fmb" data-m="free">Freehand (draw around)</button></div></div>
+      <div class="fsw-cv" id="boxB"><div class="ph">Choose the fake photo above.</div></div>
+      <div class="fsw-bar"><span id="stB">Draw around the face</span><button type="button" id="clrB">Clear mark</button></div>
+
+      <div class="ch" style="margin-top:22px"><h2>What the ending shows</h2></div>
+      <div class="fsw-mode" style="margin-top:8px"><button type="button" id="rvSwap" class="on">Real photo with the fake face</button><button type="button" id="rvWhole">The whole fake photo</button></div>
+      <p class="hint" id="fsmsg"></p>
+      <div class="fsw-res"><canvas id="cvR" width="10" height="10" hidden></canvas></div>
+      <div class="rg"><div class="lb"><label for="fsoft">Edge softness</label><output id="o-fsoft"></output></div><input type="range" id="fsoft" min="0" max="40" step="1" value="14"></div>
+      <label class="sw"><span><b>Match skin tone</b><small>Shifts the fake face colour toward the real photo so it blends in</small></span><input type="checkbox" id="fmatch" checked><i></i></label>
     </div>
 
     <div class="card pane" id="pane-look">
@@ -305,38 +320,10 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
 </main>
 
 
-<div id="fsw" class="fsw" hidden role="dialog" aria-modal="true" aria-label="Face swap">
-  <div class="fsw-box">
-    <div class="fsw-h"><h2>🙂 Face swap: replace only the face</h2><button id="fsx" type="button">Close</button></div>
-    <p class="hint">Upload person 1, then draw around their face. Upload person 2, then draw around their face. Only person 2's face is placed onto person 1.</p>
-    <div class="fsw-tools">
-      <div><div class="lbl">Mark the face with</div><div class="fsw-mode"><button type="button" id="fmOval" class="on">Oval (drag a box)</button><button type="button" id="fmFree">Freehand (draw around)</button></div></div>
-      <div class="rg"><div class="lb"><label for="fsoft">Edge softness</label><output id="o-fsoft"></output></div><input type="range" id="fsoft" min="0" max="40" step="1" value="14"></div>
-    </div>
-    <label class="sw"><span><b>Match skin tone</b><small>Shifts the new face colour toward person 1 so it blends in</small></span><input type="checkbox" id="fmatch" checked><i></i></label>
-    <div class="fsw-cols">
-      <div id="fcA">
-        <div class="lbl">1 · Person whose body and photo stay</div>
-        <label class="drop" for="fsfA"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span><span><b>Upload person 1</b><small>Click or drag a photo here</small></span><input type="file" id="fsfA" class="vh" accept="image/*"></label>
-        <div class="fsw-cv" id="boxA"><div class="ph">No photo yet</div></div>
-        <div class="fsw-bar"><span id="stA">Upload a photo, then draw around the face</span><button type="button" id="clrA">Clear mark</button></div>
-        <div class="fsw-row"><button type="button" id="fsAcur">Use my current image 1</button></div>
-      </div>
-      <div id="fcB">
-        <div class="lbl">2 · Person whose face is used</div>
-        <label class="drop" for="fsfB"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg></span><span><b>Upload person 2</b><small>Click or drag a photo here</small></span><input type="file" id="fsfB" class="vh" accept="image/*"></label>
-        <div class="fsw-cv" id="boxB"><div class="ph">No photo yet</div></div>
-        <div class="fsw-bar"><span id="stB">Upload a photo, then draw around the face</span><button type="button" id="clrB">Clear mark</button></div>
-        <div class="fsw-row"><button type="button" id="fsBans">Use my answer image 2</button></div>
-      </div>
-    </div>
-    <div class="fsw-res"><div class="lbl">Result</div><canvas id="cvR" width="10" height="10" hidden></canvas><div class="hint" id="fsRh">Mark both faces to see the result here.</div></div>
-    <div class="fsw-act"><button type="button" id="fsU1" class="pri" disabled>Use as the sketch image (1)</button><button type="button" id="fsU2" disabled>Use as the answer image (2)</button></div>
-  </div>
-</div>
 <script>
 const $=id=>document.getElementById(id),cv=$('cv'),cx=cv.getContext('2d');
 const art=document.createElement('canvas'),ax=art.getContext('2d');
+const FS={A:null,B:null,mode:'oval',rv:'swap',R:null};
 let SD=null,ansC=null,ansName='',lastDemo=0,curTab='player',srcC=null,W=720,H=720,OW=1920,OH=1080,PX=0,PY=0,PW=720,PH=720,sc=1,STR=[],anim=null,busy=false,curName='',bgc=null,bgk='';
 const clamp01=x=>Math.min(1,Math.max(0,x)),ease=x=>1-Math.pow(1-clamp01(x),3),back=x=>{x=clamp01(x);const c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
 const status=m=>{$('stt').textContent=m};
@@ -398,7 +385,7 @@ function useImage(img){
   const k=720/Math.max(img.width,img.height);W=Math.round(img.width*k);H=Math.round(img.height*k);
   srcC=document.createElement('canvas');srcC.width=W;srcC.height=H;
   const c=srcC.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,W,H);c.drawImage(img,0,0,W,H);
-  layout();status('Ready. Press Play it.');
+  fsLoad('A',srcC);layout();status('Ready. Press Play it.');
 }
 function drawCover(c,img,x,y,w,h){const iw=img.width,ih=img.height,k=Math.max(w/iw,h/ih),dw=iw*k,dh=ih*k;c.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh)}
 function useAnswer(im,name){
@@ -407,9 +394,9 @@ function useAnswer(im,name){
   ansName=name||'Answer';
   const pc=$('phc2'),x=pc.getContext('2d'),q=Math.min(120/im.width,120/im.height);x.fillStyle='#fff';x.fillRect(0,0,120,120);x.drawImage(im,(120-im.width*q)/2,(120-im.height*q)/2,im.width*q,im.height*q);
   $('phn2').textContent=ansName;$('phv2').hidden=false;$('pt-ans').classList.add('has');
-  status('Answer image set. The sketch will end by revealing it. Press Play it.');showPane('ans');idle();
+  fsLoad('B',ansC);status('Fake photo set. Mark the face on both photos to swap only the face. Press Play it.');showPane('ans');idle();
 }
-function clearAnswer(){ansC=null;ansName='';$('phv2').hidden=true;$('pt-ans').classList.remove('has');$('file2').value='';status('Answer image removed. Image 1 will be revealed.');idle()}
+function clearAnswer(){ansC=null;ansName='';$('phv2').hidden=true;$('pt-ans').classList.remove('has');$('file2').value='';fsLoad('B',null);status('Fake photo removed. The real photo will be revealed.');idle()}
 function loadAnswerFile(f){if(!f||!f.type.startsWith('image/'))return;const r=new FileReader();
   r.onload=()=>{const im=new Image();im.onload=()=>useAnswer(im,f.name);im.onerror=()=>status('Could not read that image.');im.src=r.result};r.readAsDataURL(f);}
 function loadAnswerURL(u){u=u.trim();if(!u)return;status('Loading the answer image…');const im=new Image();im.crossOrigin='anonymous';
@@ -827,7 +814,7 @@ function drawPanel(a,T,S,th){
   cx.save();cx.beginPath();cx.roundRect(PX,PY,PW,PH,20*S);cx.clip();cx.drawImage(art,PX,PY);if(!a&&srcC)cx.drawImage(srcC,PX,PY,PW,PH);
   if(a&&a.rev&&a.done&&a.rt>=.3+a.dl){
     const maxR=Math.hypot(PW,PH)/2*1.05,r=ease((a.rt-.3-a.dl)/1.4)*maxR;
-    cx.save();cx.beginPath();cx.arc(cxp,cyp,r,0,7);cx.clip();if(ansC)drawCover(cx,ansC,PX,PY,PW,PH);else cx.drawImage(srcC,PX,PY,PW,PH);cx.restore();
+    cx.save();cx.beginPath();cx.arc(cxp,cyp,r,0,7);cx.clip();const rvI=revImg();if(rvI)drawCover(cx,rvI,PX,PY,PW,PH);else cx.drawImage(srcC,PX,PY,PW,PH);cx.restore();
     if(r<maxR){cx.beginPath();cx.arc(cxp,cyp,r,0,7);cx.lineWidth=10*S;cx.strokeStyle=th.acc;cx.shadowColor=th.acc;cx.shadowBlur=30*S;cx.stroke();cx.shadowBlur=0;}
   }
   cx.restore();cx.restore();
@@ -888,8 +875,8 @@ function drawFun(a,S,th){
   }
   const st=rt-DL-1.75;
   if(st>0){
-    const txt=($('t-stamp').value.trim()||'WRONG!').toUpperCase(),mx=PX+PW/2,my=PY+PH/2;
-    const f=fit(txt,PW*.82,150*S,46*S,2,'400',FT),lh=f.px*1.05;let mw=0;f.L.forEach(l=>{mw=Math.max(mw,cx.measureText(l).width)});
+    const txt=($('t-stamp').value.trim()||'WRONG!').toUpperCase(),mx=PX+PW/2,my=PY+PH*.8;
+    const f=fit(txt,PW*.74,130*S,40*S,2,'400',FT),lh=f.px*1.05;let mw=0;f.L.forEach(l=>{mw=Math.max(mw,cx.measureText(l).width)});
     const bw=mw+70*S,bh=f.L.length*lh+46*S,k=1+(1-ease(st/.16))*2.6,rot=-.21+Math.sin(st*15)*Math.exp(-st*5)*.07;
     cx.save();cx.globalAlpha=Math.min(1,st*12);cx.translate(mx,my);cx.rotate(rot);cx.scale(k,k);
     cx.shadowColor='rgba(0,0,0,.55)';cx.shadowBlur=26*S;cx.shadowOffsetY=8*S;
@@ -962,7 +949,7 @@ function startDraw(cb){
     STR=build();paper();ax.setTransform(sc,0,0,sc,0,0);
     const speed=300*Math.pow(+$('speed').value,1.5);let eff=0;
     STR.forEach(s=>{const p=s.p;let l=0;for(let i=2;i<p.length;i+=2)l+=Math.hypot(p[i]-p[i-2],p[i+1]-p[i-1]);eff+=l/(s.k?2.2:1)});
-    const a=anim={si:0,pi:0,px:W/2,py:H/2,done:false,T:0,rt:0,speed,drawDur:eff/speed,ans:$('t-name').value.trim()||curName,col:$('o-col').checked,rev:$('o-rev').checked||!!ansC,pen:$('o-pen').checked,style:$('dstyle').value,cur:'#e11d48',imps:[.5],f:{},last:performance.now()};
+    const a=anim={si:0,pi:0,px:W/2,py:H/2,done:false,T:0,rt:0,speed,drawDur:eff/speed,ans:$('t-name').value.trim()||curName,col:$('o-col').checked,rev:$('o-rev').checked||!!revImg(),pen:$('o-pen').checked,style:$('dstyle').value,cur:'#e11d48',imps:[.5],f:{},last:performance.now()};
     a.fun=$('o-fun').checked;a.rain=$('o-rain').checked;a.dl=a.fun?1:0;a.tail=(a.ans?3.8:2.6)+(a.fun?2.2:0);
     a.total=INTRO+a.drawDur+a.tail;$('pgb').style.transition='none';prog(null);setTimeout(()=>$('pgb').style.transition='',60);status(`Playing… ${STR.length} strokes${ansC?' · answer image ready':''}`);sfxIntro();bgStart(a.total);
     const tick=t=>{
@@ -1054,35 +1041,42 @@ $('dstyle').onchange=()=>{$('dshint').textContent=DS().hint;if(!busy&&srcC)layou
   Promise.all(['400 60px "Bebas Neue"','700 30px "Poppins"','700 30px "Hind Siliguri"'].map(x=>document.fonts.load(x))).then(()=>{if(!busy)idle()}).catch(()=>{});
 })();
 
-/* ---------- face swap: mark a face on each photo, place only that face onto person 1 ---------- */
-const FS={A:null,B:null,mode:'oval',R:null};
-const fsBB=pl=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;pl.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});return{x:x0,y:y0,w:x1-x0,h:y1-y0}};
-const fsEll=(a,b)=>{const cx0=(a[0]+b[0])/2,cy0=(a[1]+b[1])/2,rx=Math.abs(b[0]-a[0])/2,ry=Math.abs(b[1]-a[1])/2,pl=[];for(let i=0;i<72;i++){const t=i/72*Math.PI*2;pl.push([cx0+rx*Math.cos(t),cy0+ry*Math.sin(t)])}return pl};
+/* ---------- face swap: mark the face on the real photo (A) and on the fake photo (B) ---------- */
+function revImg(){return(FS.R&&FS.rv==='swap')?FS.R:ansC}
+function fsBB(pl){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;pl.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});return{x:x0,y:y0,w:x1-x0,h:y1-y0}}
+function fsEll(a,b){const cx0=(a[0]+b[0])/2,cy0=(a[1]+b[1])/2,rx=Math.abs(b[0]-a[0])/2,ry=Math.abs(b[1]-a[1])/2,pl=[];for(let i=0;i<72;i++){const t=i/72*Math.PI*2;pl.push([cx0+rx*Math.cos(t),cy0+ry*Math.sin(t)])}return pl}
 function fsLoad(side,src){
-  const k=Math.min(1,900/Math.max(src.width,src.height)),wk=document.createElement('canvas');wk.width=Math.max(1,Math.round(src.width*k));wk.height=Math.max(1,Math.round(src.height*k));
-  const c=wk.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,wk.width,wk.height);c.drawImage(src,0,0,wk.width,wk.height);
-  const box=$('box'+side);box.innerHTML='';const cv=document.createElement('canvas');cv.id='cv'+side;box.appendChild(cv);
-  const o=FS[side]={wk,poly:null,live:null,pts:null,start:null,down:false,cv,ks:1};
-  const avail=Math.max(200,Math.min(440,box.clientWidth-4||440)),ks=Math.min(avail/wk.width,430/wk.height,1.5);o.ks=ks;cv.width=Math.round(wk.width*ks);cv.height=Math.round(wk.height*ks);
+  const box=$('box'+side);if(!box)return;
+  if(!src){FS[side]=null;box.innerHTML='<div class="ph">'+(side==='A'?'Choose a photo above (or a character in the Demo tab).':'Choose the fake photo above.')+'</div>';fsStat(side);fsCompose();return}
+  const wk=document.createElement('canvas');wk.width=src.width;wk.height=src.height;wk.getContext('2d').drawImage(src,0,0);
+  box.innerHTML='';const cv=document.createElement('canvas');box.appendChild(cv);
+  const ks=Math.min(420/wk.width,420/wk.height,1.5),o=FS[side]={wk,poly:null,live:null,pts:null,start:null,down:false,cv,ks};
+  cv.width=Math.round(wk.width*ks);cv.height=Math.round(wk.height*ks);
   const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*(cv.width/r.width)/ks,(e.clientY-r.top)*(cv.height/r.height)/ks]};
   cv.onpointerdown=e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);o.start=pt(e);o.pts=[o.start];o.live=null;o.down=true;o.poly=null;fsStat(side);fsCompose()};
   cv.onpointermove=e=>{if(!o.down)return;const p=pt(e);if(FS.mode==='oval')o.live=fsEll(o.start,p);else{const l=o.pts[o.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>3/ks)o.pts.push(p);o.live=o.pts.slice()}fsDraw(side)};
-  const up=()=>{if(!o.down)return;o.down=false;const l=o.live;o.live=null;
-    if(l&&l.length>=8){const b=fsBB(l);if(b.w>10&&b.h>10)o.poly=l}fsDraw(side);fsStat(side);fsCompose()};
+  const up=()=>{if(!o.down)return;o.down=false;const l=o.live;o.live=null;if(l&&l.length>=8){const b=fsBB(l);if(b.w>10&&b.h>10)o.poly=l}fsDraw(side);fsStat(side);fsCompose()};
   cv.onpointerup=up;cv.onpointercancel=up;
   fsDraw(side);fsStat(side);fsCompose();
 }
 function fsDraw(side){
   const o=FS[side];if(!o)return;const cv=o.cv,c=cv.getContext('2d'),ks=o.ks;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,cv.width,cv.height);c.drawImage(o.wk,0,0,cv.width,cv.height);
-  const pl=o.live||o.poly;if(!pl||pl.length<2)return;
-  const path=()=>{c.beginPath();pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));if(o.live&&FS.mode==='free'&&o.down){}else c.closePath()};
-  if(!(o.live&&FS.mode==='free'&&o.down)){c.save();c.fillStyle='rgba(5,4,20,.55)';c.beginPath();c.rect(0,0,cv.width,cv.height);pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));c.closePath();c.fill('evenodd');c.restore()}
-  path();c.lineWidth=2.5;c.strokeStyle='#ffc933';c.setLineDash([7,5]);c.stroke();c.setLineDash([]);
+  const pl=o.live||o.poly;if(!pl||pl.length<2)return;const drawing=o.live&&FS.mode==='free'&&o.down;
+  if(!drawing){c.save();c.fillStyle='rgba(5,4,20,.55)';c.beginPath();c.rect(0,0,cv.width,cv.height);pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));c.closePath();c.fill('evenodd');c.restore()}
+  c.beginPath();pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));if(!drawing)c.closePath();c.lineWidth=2.5;c.strokeStyle='#ffc933';c.setLineDash([7,5]);c.stroke();c.setLineDash([]);
 }
-function fsStat(side){const o=FS[side];$('st'+side).textContent=!o?'Upload a photo, then draw around the face':o.poly?'✓ Face marked. Draw again to change it':'Now draw around the face'}
+function fsStat(side){const o=FS[side];$('st'+side).textContent=!o?'Choose a photo first':o.poly?'✓ Face marked. Draw again to change it':'Draw around the face'}
+function fsMsg(){
+  const A=FS.A&&FS.A.poly,B=FS.B&&FS.B.poly;let t;
+  if(!ansC)t='No fake photo yet. Without it, the real photo is revealed in colour at the end.';
+  else if(!(A&&B))t='To swap only the face, mark the face on the real photo (Real photo tab) and on this fake photo. Until then the whole fake photo is revealed.';
+  else t=FS.rv==='swap'?'Ready. The ending reveals the real photo with the fake face.':'The ending reveals the whole fake photo.';
+  $('fsmsg').textContent=t;
+  $('fsmsgA').textContent=A?(!ansC?'Face marked. Now open the Fake photo tab and choose the fake photo.':B?'Face marked. The result is in the Fake photo tab.':'Face marked. Now open the Fake photo tab and mark the fake photo face too.'):'';
+}
 function fsCompose(){
-  const A=FS.A,B=FS.B,res=$('cvR'),ok=A&&B&&A.poly&&B.poly;FS.R=null;$('fsU1').disabled=$('fsU2').disabled=true;
-  if(!ok){res.hidden=true;$('fsRh').hidden=false;$('fsRh').textContent=!A||!B?'Upload both photos, then mark both faces.':'Mark both faces to see the result here.';return}
+  const A=FS.A,B=FS.B,res=$('cvR'),ok=A&&B&&A.poly&&B.poly;FS.R=null;
+  if(!ok){res.hidden=true;fsMsg();return}
   const soft=+$('fsoft').value,m=Math.ceil(soft*2)+6,bA=fsBB(A.poly),bB=fsBB(B.poly),fw=Math.ceil(bA.w+2*m),fh=Math.ceil(bA.h+2*m),ox=bA.x-m,oy=bA.y-m;
   const F=document.createElement('canvas');F.width=fw;F.height=fh;const f=F.getContext('2d',{willReadFrequently:true});
   const kx=bB.w/bA.w,ky=bB.h/bA.h;f.drawImage(B.wk,bB.x-m*kx,bB.y-m*ky,fw*kx,fh*ky,0,0,fw,fh);
@@ -1094,27 +1088,18 @@ function fsCompose(){
     for(let i=0;i<mk.length;i+=8){if(mk[i+3]>128){for(let q=0;q<3;q++){sa[q]+=fa[i+q];sb[q]+=fb[i+q]}n++}}
     if(n>20){const sh=[0,1,2].map(q=>(sa[q]-sb[q])/n*.8);for(let i=0;i<fb.length;i+=4)for(let q=0;q<3;q++)fb[i+q]=Math.max(0,Math.min(255,fb[i+q]+sh[q]));f.putImageData(fd,0,0)}
   }
-  const M=document.createElement('canvas');M.width=fw;M.height=fh;const mc=M.getContext('2d'),OFF=fw+soft*4+60;
-  mc.shadowColor='#000';mc.shadowBlur=soft;mc.shadowOffsetX=OFF;mc.fillStyle='#000';mc.beginPath();polyF.forEach(([x,y],i)=>i?mc.lineTo(x-OFF,y):mc.moveTo(x-OFF,y));mc.closePath();mc.fill();
+  const M=document.createElement('canvas');M.width=fw;M.height=fh;const mc=M.getContext('2d'),OFF=fw+soft*4+60,bF=fsBB(polyF),qx=bF.x+bF.w/2,qy=bF.y+bF.h/2,sc2=.965;
+  mc.shadowColor='#000';mc.shadowBlur=soft;mc.shadowOffsetX=OFF;mc.fillStyle='#000';mc.beginPath();polyF.forEach(([x,y],i)=>{const X=qx+(x-qx)*sc2-OFF,Y=qy+(y-qy)*sc2;i?mc.lineTo(X,Y):mc.moveTo(X,Y)});mc.closePath();mc.fill();
   f.globalCompositeOperation='destination-in';f.drawImage(M,0,0);f.globalCompositeOperation='source-over';
   const R=document.createElement('canvas');R.width=A.wk.width;R.height=A.wk.height;const r=R.getContext('2d');r.drawImage(A.wk,0,0);r.drawImage(F,ox,oy);FS.R=R;
-  const k=Math.min(1,520/R.width,380/R.height);res.width=Math.round(R.width*k);res.height=Math.round(R.height*k);res.getContext('2d').drawImage(R,0,0,res.width,res.height);res.hidden=false;$('fsRh').hidden=true;$('fsU1').disabled=$('fsU2').disabled=false;
+  const k=Math.min(1,420/R.width,300/R.height);res.width=Math.round(R.width*k);res.height=Math.round(R.height*k);res.getContext('2d').drawImage(R,0,0,res.width,res.height);res.hidden=false;fsMsg();
 }
-function fsFile(side,f){if(!f||!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>fsLoad(side,im);im.src=r.result};r.readAsDataURL(f)}
-function fsCopy(c){const d=document.createElement('canvas');d.width=c.width;d.height=c.height;d.getContext('2d').drawImage(c,0,0);return d}
-$('fsfA').onchange=e=>fsFile('A',e.target.files[0]);$('fsfB').onchange=e=>fsFile('B',e.target.files[0]);
-['A','B'].forEach(sd=>{const d=document.querySelector('#fc'+sd+' .drop');['dragover','dragenter'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation()}));d.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();fsFile(sd,e.dataTransfer.files[0])});
-  $('clr'+sd).onclick=()=>{const o=FS[sd];if(!o)return;o.poly=null;o.live=null;fsDraw(sd);fsStat(sd);fsCompose()}});
-$('fsAcur').onclick=()=>{if(srcC)fsLoad('A',srcC);else $('stA').textContent='There is no image 1 yet'};
-$('fsBans').onclick=()=>{if(ansC)fsLoad('B',ansC);else $('stB').textContent='There is no answer image 2 yet'};
-$('fmOval').onclick=()=>{FS.mode='oval';$('fmOval').classList.add('on');$('fmFree').classList.remove('on')};
-$('fmFree').onclick=()=>{FS.mode='free';$('fmFree').classList.add('on');$('fmOval').classList.remove('on')};
+document.querySelectorAll('.fmb').forEach(b=>b.onclick=()=>{FS.mode=b.dataset.m;document.querySelectorAll('.fmb').forEach(x=>x.classList.toggle('on',x.dataset.m===FS.mode))});
+['A','B'].forEach(sd=>{$('clr'+sd).onclick=()=>{const o=FS[sd];if(!o)return;o.poly=null;o.live=null;fsDraw(sd);fsStat(sd);fsCompose()}});
+$('rvSwap').onclick=()=>{FS.rv='swap';$('rvSwap').classList.add('on');$('rvWhole').classList.remove('on');fsMsg()};
+$('rvWhole').onclick=()=>{FS.rv='whole';$('rvWhole').classList.add('on');$('rvSwap').classList.remove('on');fsMsg()};
 $('fsoft').addEventListener('input',()=>fsCompose());$('fmatch').addEventListener('change',()=>fsCompose());
-const fsClose=()=>{$('fsw').hidden=true;document.body.style.overflow=''};
-document.querySelectorAll('.fsopen').forEach(b=>b.onclick=()=>{if(busy)return;$('fsw').hidden=false;document.body.style.overflow='hidden';$('fsw').scrollTop=0});
-$('fsx').onclick=fsClose;$('fsw').addEventListener('pointerdown',e=>{if(e.target===$('fsw'))fsClose()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('fsw').hidden)fsClose()});
-$('fsU1').onclick=()=>{if(!FS.R)return;const R=fsCopy(FS.R);[...$('pg').children].forEach(b=>b.classList.remove('on'));curName='';useImage(R);setPhoto(R,'Face swap');fsClose();status('Face swap is set as the sketch image. Press Play it.')};
-$('fsU2').onclick=()=>{if(!FS.R)return;useAnswer(fsCopy(FS.R),'Face swap');fsClose()};
+if(!FS.A)fsLoad('A',srcC);fsLoad('B',ansC);
 </script>
 </body>
 </html>
