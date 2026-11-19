@@ -255,10 +255,10 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <p class="hint">Works with links that allow it, such as images from Wikimedia Commons (right click the image, copy image address).</p>
 
       <div class="ch" style="margin-top:22px"><h2>🙂 Mark the face on the real photo</h2></div>
-      <p class="hint">Optional. Only needed if you want the fake photo's face placed here. Draw around the face on the picture below.</p>
-      <div style="margin-top:10px"><div class="fsw-mode"><button type="button" class="fmb on" data-m="oval">Oval (drag a box)</button><button type="button" class="fmb" data-m="free">Freehand (draw around)</button></div></div>
+      <p class="hint">Optional. Only needed if you want the fake photo's face placed here. Drag a box over the face on the picture below, then move or resize the oval as needed.</p>
+      
       <div class="fsw-cv" id="boxA"><div class="ph">Choose a photo above (or a character in the Demo tab).</div></div>
-      <div class="fsw-bar"><span id="stA">Draw around the face</span><button type="button" id="clrA">Clear mark</button></div>
+      <div class="fsw-bar"><span id="stA">Drag a box over the face</span><button type="button" id="clrA">Clear mark</button></div>
       <p class="hint" id="fsmsgA"></p>
     </div>
 
@@ -275,10 +275,10 @@ input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(
       <div class="row2"><input type="text" id="url2" placeholder="https://.../fake.jpg"><button id="urlgo2" type="button">Load</button></div>
 
       <div class="ch" style="margin-top:22px"><h2>🙂 Mark the face on the fake photo</h2></div>
-      <p class="hint">Draw around the face on the picture below. Do the same on the real photo in the Real photo tab.</p>
-      <div style="margin-top:10px"><div class="fsw-mode"><button type="button" class="fmb on" data-m="oval">Oval (drag a box)</button><button type="button" class="fmb" data-m="free">Freehand (draw around)</button></div></div>
+      <p class="hint">Drag a box over the face on the picture below, then move or resize the oval as needed. Do the same on the real photo in the Real photo tab.</p>
+      
       <div class="fsw-cv" id="boxB"><div class="ph">Choose the fake photo above.</div></div>
-      <div class="fsw-bar"><span id="stB">Draw around the face</span><button type="button" id="clrB">Clear mark</button></div>
+      <div class="fsw-bar"><span id="stB">Drag a box over the face</span><button type="button" id="clrB">Clear mark</button></div>
 
       <div class="ch" style="margin-top:22px"><h2>What the ending shows</h2></div>
       <div class="fsw-mode" style="margin-top:8px"><button type="button" id="rvSwap" class="on">Real photo with the fake face</button><button type="button" id="rvWhole">The whole fake photo</button></div>
@@ -1044,28 +1044,75 @@ $('dstyle').onchange=()=>{$('dshint').textContent=DS().hint;if(!busy&&srcC)layou
 /* ---------- face swap: mark the face on the real photo (A) and on the fake photo (B) ---------- */
 function revImg(){return(FS.R&&FS.rv==='swap')?FS.R:ansC}
 function fsBB(pl){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;pl.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)});return{x:x0,y:y0,w:x1-x0,h:y1-y0}}
-function fsEll(a,b){const cx0=(a[0]+b[0])/2,cy0=(a[1]+b[1])/2,rx=Math.abs(b[0]-a[0])/2,ry=Math.abs(b[1]-a[1])/2,pl=[];for(let i=0;i<72;i++){const t=i/72*Math.PI*2;pl.push([cx0+rx*Math.cos(t),cy0+ry*Math.sin(t)])}return pl}
+function fsEllP(E){const pl=[];for(let i=0;i<72;i++){const t=i/72*Math.PI*2;pl.push([E.cx+E.rx*Math.cos(t),E.cy+E.ry*Math.sin(t)])}return pl}
+function fsEllOf(a,b){return{cx:(a[0]+b[0])/2,cy:(a[1]+b[1])/2,rx:Math.abs(b[0]-a[0])/2,ry:Math.abs(b[1]-a[1])/2}}
+function fsEll(a,b){return fsEllP(fsEllOf(a,b))}
+const FS_HND=[[-1,-1],[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0]];
+function fsHit(o,p){
+  const E=o.ell;if(!E)return null;const r=o.cv.getBoundingClientRect(),tol=14/(r.width/o.wk.width);
+  let best=null,bd=1e9;
+  FS_HND.forEach(([sx,sy])=>{const d=Math.hypot(p[0]-(E.cx+sx*E.rx),p[1]-(E.cy+sy*E.ry));if(d<tol&&d<bd){bd=d;best={t:'h',sx,sy}}});
+  if(best)return best;
+  const dx=(p[0]-E.cx)/Math.max(E.rx,1),dy=(p[1]-E.cy)/Math.max(E.ry,1);
+  return dx*dx+dy*dy<=1?{t:'m'}:null;
+}
+function fsCursor(h){if(!h)return'crosshair';if(h.t==='m')return'move';if(h.sx===0)return'ns-resize';if(h.sy===0)return'ew-resize';return h.sx*h.sy===1?'nwse-resize':'nesw-resize'}
 function fsLoad(side,src){
   const box=$('box'+side);if(!box)return;
   if(!src){FS[side]=null;box.innerHTML='<div class="ph">'+(side==='A'?'Choose a photo above (or a character in the Demo tab).':'Choose the fake photo above.')+'</div>';fsStat(side);fsCompose();return}
   const wk=document.createElement('canvas');wk.width=src.width;wk.height=src.height;wk.getContext('2d').drawImage(src,0,0);
   box.innerHTML='';const cv=document.createElement('canvas');box.appendChild(cv);
-  const ks=Math.min(420/wk.width,420/wk.height,1.5),o=FS[side]={wk,poly:null,live:null,pts:null,start:null,down:false,cv,ks};
+  const ks=Math.min(420/wk.width,420/wk.height,1.5),o=FS[side]={wk,poly:null,live:null,liveE:null,ell:null,drag:null,pts:null,start:null,down:false,cv,ks};
   cv.width=Math.round(wk.width*ks);cv.height=Math.round(wk.height*ks);
   const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*(cv.width/r.width)/ks,(e.clientY-r.top)*(cv.height/r.height)/ks]};
-  cv.onpointerdown=e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);o.start=pt(e);o.pts=[o.start];o.live=null;o.down=true;o.poly=null;fsStat(side);fsCompose()};
-  cv.onpointermove=e=>{if(!o.down)return;const p=pt(e);if(FS.mode==='oval')o.live=fsEll(o.start,p);else{const l=o.pts[o.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>3/ks)o.pts.push(p);o.live=o.pts.slice()}fsDraw(side)};
-  const up=()=>{if(!o.down)return;o.down=false;const l=o.live;o.live=null;if(l&&l.length>=8){const b=fsBB(l);if(b.w>10&&b.h>10)o.poly=l}fsDraw(side);fsStat(side);fsCompose()};
+  cv.onpointerdown=e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);
+    if(FS.mode==='oval'&&o.ell&&o.poly){const h=fsHit(o,pt(e));if(h){const p0=pt(e);o.drag={h,p0,e0:{...o.ell}};o.down=true;return}}
+    o.ell=null;o.liveE=null;o.start=pt(e);o.pts=[o.start];o.live=null;o.down=true;o.poly=null;fsStat(side);fsCompose()};
+  cv.onpointermove=e=>{
+    if(!o.down){cv.style.cursor=(FS.mode==='oval'&&o.ell&&o.poly)?fsCursor(fsHit(o,pt(e))):'crosshair';return}
+    const p=pt(e);
+    if(o.drag){const d=o.drag,E0=d.e0;let E;
+      if(d.h.t==='m'){E={cx:E0.cx+p[0]-d.p0[0],cy:E0.cy+p[1]-d.p0[1],rx:E0.rx,ry:E0.ry}}
+      else{let x0=E0.cx-E0.rx,x1=E0.cx+E0.rx,y0=E0.cy-E0.ry,y1=E0.cy+E0.ry;const{sx,sy}=d.h;
+        if(sx===1)x1=p[0];else if(sx===-1)x0=p[0];if(sy===1)y1=p[1];else if(sy===-1)y0=p[1];
+        E={cx:(x0+x1)/2,cy:(y0+y1)/2,rx:Math.max(Math.abs(x1-x0)/2,5),ry:Math.max(Math.abs(y1-y0)/2,5)}}
+      o.ell=E;o.poly=fsEllP(E);fsDraw(side);return}
+    if(FS.mode==='oval'){o.liveE=fsEllOf(o.start,p);o.live=fsEllP(o.liveE)}else{const l=o.pts[o.pts.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>3/ks)o.pts.push(p);o.live=o.pts.slice()}fsDraw(side)};
+  const up=()=>{if(!o.down)return;o.down=false;
+    if(o.drag){o.drag=null;fsDraw(side);fsStat(side);fsCompose();return}
+    const l=o.live;o.live=null;if(l&&l.length>=8){const b=fsBB(l);if(b.w>10&&b.h>10){o.poly=l;if(FS.mode==='oval')o.ell=o.liveE}}o.liveE=null;fsDraw(side);fsStat(side);fsCompose()};
   cv.onpointerup=up;cv.onpointercancel=up;
   fsDraw(side);fsStat(side);fsCompose();
 }
 function fsDraw(side){
   const o=FS[side];if(!o)return;const cv=o.cv,c=cv.getContext('2d'),ks=o.ks;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,cv.width,cv.height);c.drawImage(o.wk,0,0,cv.width,cv.height);
-  const pl=o.live||o.poly;if(!pl||pl.length<2)return;const drawing=o.live&&FS.mode==='free'&&o.down;
-  if(!drawing){c.save();c.fillStyle='rgba(5,4,20,.55)';c.beginPath();c.rect(0,0,cv.width,cv.height);pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));c.closePath();c.fill('evenodd');c.restore()}
-  c.beginPath();pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));if(!drawing)c.closePath();c.lineWidth=2.5;c.strokeStyle='#ffc933';c.setLineDash([7,5]);c.stroke();c.setLineDash([]);
+  const pl=o.live||o.poly;if(!pl||pl.length<2)return;
+  const path=()=>{c.beginPath();pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));c.closePath()};
+  const GOLD='#ffc933',PINK='#ff5fa2';
+  /* dim everything outside the oval */
+  c.save();c.fillStyle='rgba(8,6,28,.62)';c.beginPath();c.rect(0,0,cv.width,cv.height);pl.forEach(([x,y],i)=>i?c.lineTo(x*ks,y*ks):c.moveTo(x*ks,y*ks));c.closePath();c.fill('evenodd');c.restore();
+  /* soft warm tint inside */
+  c.save();path();c.fillStyle='rgba(255,201,51,.07)';c.fill();c.restore();
+  /* glow ring */
+  c.save();path();c.lineJoin='round';c.shadowColor='rgba(255,201,51,.9)';c.shadowBlur=16;c.lineWidth=4;c.strokeStyle='rgba(255,255,255,.95)';c.stroke();c.restore();
+  /* gradient accent ring on top */
+  const bb=fsBB(pl),g=c.createLinearGradient(bb.x*ks,bb.y*ks,(bb.x+bb.w)*ks,(bb.y+bb.h)*ks);g.addColorStop(0,GOLD);g.addColorStop(1,PINK);
+  c.save();path();c.lineWidth=2;c.strokeStyle=g;c.stroke();c.restore();
+  const E=o.ell;
+  if(FS.mode==='oval'&&E&&o.poly&&!o.live){
+    const cx=E.cx*ks,cy=E.cy*ks,L=Math.min(E.rx,E.ry)*ks*.16;
+    /* faint bounding box */
+    c.save();c.lineWidth=1;c.setLineDash([4,5]);c.strokeStyle='rgba(255,255,255,.35)';c.strokeRect((E.cx-E.rx)*ks,(E.cy-E.ry)*ks,E.rx*2*ks,E.ry*2*ks);c.restore();
+    /* centre cross (move hint) */
+    c.save();c.lineCap='round';c.lineWidth=3;c.strokeStyle='rgba(0,0,0,.35)';c.beginPath();c.moveTo(cx-L,cy);c.lineTo(cx+L,cy);c.moveTo(cx,cy-L);c.lineTo(cx,cy+L);c.stroke();
+    c.lineWidth=1.5;c.strokeStyle='rgba(255,255,255,.9)';c.stroke();c.restore();
+    /* round handles */
+    FS_HND.forEach(([sx,sy])=>{const X=(E.cx+sx*E.rx)*ks,Y=(E.cy+sy*E.ry)*ks,corner=sx&&sy,r=corner?7:5.5;
+      c.save();c.shadowColor='rgba(0,0,0,.55)';c.shadowBlur=6;c.shadowOffsetY=1.5;c.beginPath();c.arc(X,Y,r,0,7);c.fillStyle='#fff';c.fill();c.restore();
+      c.beginPath();c.arc(X,Y,r,0,7);c.lineWidth=2.5;c.strokeStyle=corner?PINK:GOLD;c.stroke()});
+  }
 }
-function fsStat(side){const o=FS[side];$('st'+side).textContent=!o?'Choose a photo first':o.poly?'✓ Face marked. Draw again to change it':'Draw around the face'}
+function fsStat(side){const o=FS[side];$('st'+side).textContent=!o?'Choose a photo first':o.poly?(FS.mode==='oval'&&o.ell?'✓ Face marked. Drag inside to move, pull the squares to resize':'✓ Face marked. Draw again to change it'):'Drag a box over the face to draw the oval'}
 function fsMsg(){
   const A=FS.A&&FS.A.poly,B=FS.B&&FS.B.poly;let t;
   if(!ansC)t='No fake photo yet. Without it, the real photo is revealed in colour at the end.';
@@ -1094,8 +1141,8 @@ function fsCompose(){
   const R=document.createElement('canvas');R.width=A.wk.width;R.height=A.wk.height;const r=R.getContext('2d');r.drawImage(A.wk,0,0);r.drawImage(F,ox,oy);FS.R=R;
   const k=Math.min(1,420/R.width,300/R.height);res.width=Math.round(R.width*k);res.height=Math.round(R.height*k);res.getContext('2d').drawImage(R,0,0,res.width,res.height);res.hidden=false;fsMsg();
 }
-document.querySelectorAll('.fmb').forEach(b=>b.onclick=()=>{FS.mode=b.dataset.m;document.querySelectorAll('.fmb').forEach(x=>x.classList.toggle('on',x.dataset.m===FS.mode))});
-['A','B'].forEach(sd=>{$('clr'+sd).onclick=()=>{const o=FS[sd];if(!o)return;o.poly=null;o.live=null;fsDraw(sd);fsStat(sd);fsCompose()}});
+document.querySelectorAll('.fmb').forEach(b=>b.onclick=()=>{FS.mode=b.dataset.m;document.querySelectorAll('.fmb').forEach(x=>x.classList.toggle('on',x.dataset.m===FS.mode));['A','B'].forEach(sd=>{if(FS[sd]){fsDraw(sd);fsStat(sd)}})});
+['A','B'].forEach(sd=>{$('clr'+sd).onclick=()=>{const o=FS[sd];if(!o)return;o.poly=null;o.live=null;o.ell=null;o.drag=null;fsDraw(sd);fsStat(sd);fsCompose()}});
 $('rvSwap').onclick=()=>{FS.rv='swap';$('rvSwap').classList.add('on');$('rvWhole').classList.remove('on');fsMsg()};
 $('rvWhole').onclick=()=>{FS.rv='whole';$('rvWhole').classList.add('on');$('rvSwap').classList.remove('on');fsMsg()};
 $('fsoft').addEventListener('input',()=>fsCompose());$('fmatch').addEventListener('change',()=>fsCompose());
